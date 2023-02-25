@@ -20,7 +20,8 @@ class UserController extends Controller
         if ($req->key && $req->key != '') {
             $data = $data->where('name', 'LIKE', '%' . $req->key . '%')->Orwhere('phone', 'LIKE', '%' . $req->key . '%');
         }
-        $data = $data->orderBy('id', 'desc')->get();
+        $data = $data->orderBy('id', 'desc')
+        ->paginate($req->limit ? $req->limit : 10,);
         return response()->json($data, Response::HTTP_OK);
     }
 

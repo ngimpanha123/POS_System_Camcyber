@@ -92,7 +92,7 @@ class MyProfileController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'ពាក្យសម្ងាត់ចាស់របស់អ្នកមិនត្រឹមត្រូវ'
-            ], 401);
+            ], 400);
         }
     }
 }

@@ -74,7 +74,7 @@ class Handler extends ExceptionHandler
                 return response()->json([
                     'message'   => 'Controller does not exist.',
                     'error'     => $e->getMessage()
-                ], 401);
+                ], 400);
             }
         });
 

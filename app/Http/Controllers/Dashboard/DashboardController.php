@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order\Order;
+use Illuminate\Http\Response;
 
 class DashboardController extends Controller
 {
@@ -11,8 +12,8 @@ class DashboardController extends Controller
     {
         $totalSaleToday = Order::sum('total_price');
         $data = [
-            'total_sale_today'           => $totalSaleToday
+            'total_sale_today' => $totalSaleToday
         ];
-        return $data;
+        return response()->json($data, Response::HTTP_OK);
     }
 }

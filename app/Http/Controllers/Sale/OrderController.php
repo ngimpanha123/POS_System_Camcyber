@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Sale;
 use App\Http\Controllers\Controller;
 use App\Models\Order\Order;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class OrderController extends Controller
 {
     function isValidDate($date)
     {
-        //echo $date; die;
         if (false === strtotime($date)) {
             return false;
         } else {
@@ -55,7 +55,7 @@ class OrderController extends Controller
 
         $data = $data->orderBy('id', 'desc')
             ->paginate($req->limit ? $req->limit : 10);
-        return response()->json($data, 200);
+        return response()->json($data, Response::HTTP_OK);
     }
     public function delete($id = 0)
     {
@@ -63,19 +63,16 @@ class OrderController extends Controller
 
         //==============================>> Start deleting data
         if ($data) {
-
             $data->delete();
-
             return response()->json([
-                'status'    => 'success',
+                'status'    => 'ជោគជ័យ',
                 'message'   => 'ទិន្នន័យត្រូវបានលុប',
-                'order'     => $data
-            ], 200);
+            ], Response::HTTP_OK);
         } else {
-
             return response()->json([
+                'status'    => 'បរាជ័យ',
                 'message' => 'ទិន្នន័យមិនត្រឹមត្រូវ។',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

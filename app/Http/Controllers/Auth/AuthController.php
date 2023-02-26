@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -30,10 +31,10 @@ class AuthController extends Controller
             $req,
             ['username' => ['required'], 'password' => 'required|min:6|max:20'],
             [
-                'username.required' => 'Username is required.',
-                'password.required' => 'Password is required.',
-                'password.min' => 'Password must be at least 6 digit long.',
-                'password.max' => 'Password is not allowed to be longer than 20 digit long.',
+                'username.required' => 'សូមបញ្ចូលអុីម៉ែលឬលេខទូរស័ព្ទ',
+                'password.required' => 'សូមបញ្ចូលលេខសម្ងាត់',
+                'password.min'      => 'លេខសម្ងាត់ត្រូវធំជាងឬស្មើ៦',
+                'password.max'      => 'លេខសម្ងាត់ត្រូវតូចជាងឬស្មើ២០',
             ]
         );
         if (filter_var($req->post('username'), FILTER_VALIDATE_EMAIL)) {
@@ -54,21 +55,20 @@ class AuthController extends Controller
 
         try {
 
-            JWTAuth::factory()->setTTL(30); //30 min
+            JWTAuth::factory()->setTTL(120); //120 នាទី
             $token = JWTAuth::attempt($credentials);
-
             if (!$token) {
-
                 return response()->json([
                     'status' => 'error',
                     'message' => 'ឈ្មោះអ្នកប្រើឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ។'
-                ], 401);
+                ], Response::HTTP_UNAUTHORIZED);
             }
         } catch (JWTException $e) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'មិនអាចបង្កើតនិមិត្តសញ្ញាទេ!'
-            ], 500);
+                'status'    => 'បរាជ័យ',
+                'message'   => 'មិនអាចបង្កើតនិមិត្តសញ្ញាទេ',
+                'error'     => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->respondWithToken($token);
@@ -82,38 +82,23 @@ class AuthController extends Controller
         $this->validate(
             $req,
             [
-                'username' => ['required'],
-                'password' => 'required|min:6|max:20',
+                'name'                  => 'required',
+                'username'              => 'required',
+                'password'              => 'required|min:6|max:20',
                 'password_confirmation' => 'required|same:password'
             ],
             [
-                'username.required' => 'Username is required.',
-                'password.required' => 'Password is required.',
-                'password.min' => 'Password must be at least 6 digit long.',
-                'password.max' => 'Password is not allowed to be longer than 20 digit long.',
-                'password_confirmation.required'     => 'សូមបញ្ចូលពាក្យសម្ងាត់របស់អ្នកឡើងវិញ',
-                'password_confirmation.same'         => 'សូមបញ្ចូលពាក្យសម្ងាត់បញ្ជាក់របស់អ្នកឡើងវិញទៅពាក្យសម្ងាត់ថ្មីដដែល',
+                'name.required'                     => 'សូមបញ្ចូលឈ្មោះ',
+                'username.required'                 => 'សូមបញ្ចូលអុីម៉ែលឬលេខទូរស័ព្ទ',
+                'password.required'                 => 'សូមបញ្ចូលពាក្យសម្ងាត់',
+                'password.min'                      => 'លេខសម្ងាត់ត្រូវធំជាងឬស្មើ៦',
+                'password.max'                      => 'លេខសម្ងាត់ត្រូវតូចជាងឬស្មើ២០',
+                'password_confirmation.required'    => 'សូមបញ្ចូលបញ្ជាក់ពាក្យសម្ងាត់',
+                'password_confirmation.same'        => 'សូមបញ្ចូលបញ្ជាក់ពាក្យសម្ងាត់ឲ្យដូវទៅពាក្យសម្ងាត់',
             ]
         );
     }
 
-    /**
-     * changePassword
-     */
-    public function changePassword()
-    {
-        return "hi";
-    }
-
-    /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function view()
-    {
-        return response()->json(JWTAuth::parseToken()->authenticate()); //auth()->user()
-    }
 
     /**
      * Log the user out (Invalidate the token).
@@ -133,7 +118,7 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        JWTAuth::factory()->setTTL(30); //30 min
+        JWTAuth::factory()->setTTL(240); //240 min
         return $this->respondWithToken(JWTAuth::refresh());
     }
 
@@ -168,6 +153,6 @@ class AuthController extends Controller
             'expires_in'    => JWTAuth::factory()->getTTL() * 60 . ' seconds',
             'user'          => $dataUser,
             'role'          => $role
-        ]);
+        ], Response::HTTP_OK);
     }
 }

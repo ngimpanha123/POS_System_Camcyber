@@ -4,9 +4,10 @@ namespace App\Http\Controllers\MyProfile;
 
 use App\Http\Controllers\Controller;
 use App\Models\User\User;
-use App\Services\FileUpload as ServicesFileUpload;
+use App\Services\FileUpload;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -16,21 +17,19 @@ class MyProfileController extends Controller
     {
         $auth = JWTAuth::parseToken()->authenticate();
         $admin = User::select('id', 'name', 'phone', 'email', 'avatar')->where('id', $auth->id)->first();
-        return response()->json($admin, 200);
+        return response()->json($admin, Response::HTTP_OK);
     }
 
     public function update(Request $req)
     {
         $user_id = JWTAuth::parseToken()->authenticate()->id;
         $this->validate($req, [
-            'name' => 'required|max:60',
-            'phone' =>  [
-                'required',
-                'regex:/(^[0][0-9].{7}$)|(^[0][0-9].{8}$)/'
-            ],
+            'name'  => 'required|max:60',
+            'phone' => 'required|regex:/(^[0][0-9].{7}$)|(^[0][0-9].{8}$)/'
+            ,
         ],[
             'name.required' => 'សូមបញ្ចូលឈ្មោះ',
-            'name.max' => 'ឈ្មោះមិនអាចលើសពី៦០',
+            'name.max'      => 'ឈ្មោះមិនអាចលើសពី៦០',
             'phone.required'=> 'សូមបញ្ចូលលេខទូរស័ព្ទ',
             'phone.regex'   => 'សូមបញ្ចូលលេខទូរស័ព្ទឲ្យបានត្រឹមត្រូវ'
         ]);
@@ -42,8 +41,7 @@ class MyProfileController extends Controller
         $user->updated_at = Carbon::now()->format('Y-m-d H:i:s');
 
         //Start to upload image 
-        $today      = Carbon::today()->format('d') . '-' . Carbon::today()->format('M') . '-' . Carbon::today()->format('Y');
-        $res        = ServicesFileUpload::uploadFile($req->avatar, 'my-profile/' . $today, '');
+        $res    = FileUpload::uploadFile($req->image, 'my-profile', $req->fileName);
         if ($res) {
             if (isset($res['url'])) {
                 if ($res['url'] != '') {
@@ -54,10 +52,10 @@ class MyProfileController extends Controller
         $user->save();
 
         return response()->json([
-            'status'    => 'success',
-            'message'   => 'ការកែបានជោគជ័យ!',
-            'data'      => User::findOrFail($user_id)
-        ], 200);
+            'status'    => 'ជោគជ័យ',
+            'message'   => 'ការកែប្រែបានជោគជ័យ',
+            'data'      => $user
+        ], Response::HTTP_OK);
     }
     public function changePassword(Request $req)
     {
@@ -87,12 +85,12 @@ class MyProfileController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'ការកែបានជោគជ័យ!'
-            ], 200);
+            ], Response::HTTP_OK);
         } else {
             return response()->json([
                 'status' => 'error',
                 'message' => 'ពាក្យសម្ងាត់ចាស់របស់អ្នកមិនត្រឹមត្រូវ'
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

@@ -71,7 +71,7 @@ class UserController extends Controller
 
         // Need to create folder before storing images
         if ($req->image) {
-            $image     = FileUpload::uploadFile($req->image, 'users', '');
+            $image     = FileUpload::uploadFile($req->image, 'users', $req->fileName);
             if ($image['url']) {
                 $user->avatar = $image['url'];
             }

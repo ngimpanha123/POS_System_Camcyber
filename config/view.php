@@ -14,8 +14,7 @@ return [
     */
 
     'paths' => [
-        // resource_path('views'),
-        base_path('resources') //By Yim Klok
+        base_path('resources')
     ],
 
     /*

@@ -38,8 +38,9 @@ Route::group([], function () {
 
         //============>> My Profile
         require(__DIR__ . '/api/myprofile/main.php');
-
-        //============>> PrintPDF
+    });
+    //============>> PrintPDF
+    Route::group(['prefix' => 'print'], function () {
         require(__DIR__ . '/api/printpdf/main.php');
     });
 });

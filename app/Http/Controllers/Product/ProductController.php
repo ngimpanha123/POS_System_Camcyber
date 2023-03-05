@@ -21,7 +21,8 @@ class ProductController extends Controller
         if ($req->type && $req->type != 0) {
             $data = $data->where('type_id', $req->type);
         }
-        $data = $data->limit(100)->orderBy('id', 'DESC')->get();
+        $data = $data->orderBy('id', 'desc')
+        ->paginate($req->limit ? $req->limit : 10,'per_page');
         return response()->json($data, Response::HTTP_OK);
     }
 
@@ -67,7 +68,7 @@ class ProductController extends Controller
         }
 
         return response()->json([
-            'data'      => $product,
+            'data'      =>  Product::select('*')->with(['type'])->find($product->id),
             'message'   => 'ផលិតផលត្រូវបានបង្កើតដោយជោគជ័យ។'
         ], Response::HTTP_OK);
     }

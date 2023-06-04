@@ -33,60 +33,60 @@ class UserSeeder extends Seeder
         */
         $users =  [
             [
-                'type_id' => 1,
-                'email' => 'yimklok.kh@gmail.com',
-                'phone' => '0977779688',
-                'password' => bcrypt('123456'),
-                'is_active' => 1,
-                'name' => 'Yim Klok',
-                'avatar' => 'static/icon/user.png',
-                'created_at'=> Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at'=>  Carbon::now()->format('Y-m-d H:i:s')
+                'type_id'       => 1,
+                'email'         => 'yimklok.kh@gmail.com',
+                'phone'         => '0977779688',
+                'password'      => bcrypt('123456'),
+                'is_active'     => 1,
+                'name'          => 'Yim Klok',
+                'avatar'        => 'static/icon/user.png',
+                'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at'    =>  Carbon::now()->format('Y-m-d H:i:s')
 
             ],
             [
-                'type_id' => 2,
-                'email' => 'staff1@gmail.com',
-                'phone' => '020000001',
-                'password' => bcrypt('123456'),
-                'is_active' => 1,
-                'name' => 'Heng Meymey',
-                'avatar' => 'static/icon/user.png',
-                'created_at'=> Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at'=>  Carbon::now()->format('Y-m-d H:i:s')
+                'type_id'       => 2,
+                'email'         => 'staff1@gmail.com',
+                'phone'         => '020000001',
+                'password'      => bcrypt('123456'),
+                'is_active'     => 1,
+                'name'          => 'Heng Meymey',
+                'avatar'        => 'static/icon/user.png',
+                'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at'    =>  Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
-                'type_id' => 2,
-                'email' => 'staff2@gmail.com',
-                'phone' => '0965175578',
-                'password' => bcrypt('123456'),
-                'is_active' => 1,
-                'name' => 'Kim Sonen',
-                'avatar' => 'static/icon/user.png',
-                'created_at'=> Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at'=>  Carbon::now()->format('Y-m-d H:i:s')
+                'type_id'       => 2,
+                'email'         => 'staff2@gmail.com',
+                'phone'         => '0965175578',
+                'password'      => bcrypt('123456'),
+                'is_active'     => 1,
+                'name'          => 'Kim Sonen',
+                'avatar'        => 'static/icon/user.png',
+                'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at'    =>  Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
-                'type_id' => 2,
-                'email' => 'songhak@gmail.com',
-                'phone' => '012263562',
-                'password' => bcrypt('123456'),
-                'is_active' => 1,
-                'name' => 'Chrech songhak',
-                'avatar' => 'static/icon/user.png',
-                'created_at'=> Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at'=>  Carbon::now()->format('Y-m-d H:i:s')
+                'type_id'   	=> 2,
+                'email'         => 'songhak@gmail.com',
+                'phone'         => '012263562',
+                'password'      => bcrypt('123456'),
+                'is_active'     => 1,
+                'name'          => 'Chrech songhak',
+                'avatar'        => 'static/icon/user.png',
+                'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at'    =>  Carbon::now()->format('Y-m-d H:i:s')
             ] ,
             [
-                'type_id' => 2,
-                'email' => 'vanuth@gmail.com',
-                'phone' => '012263561',
-                'password' => bcrypt('123456'),
-                'is_active' => 1,
-                'name' => 'Ven Vanuth',
-                'avatar' => 'static/icon/user.png',
-                'created_at'=> Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at'=>  Carbon::now()->format('Y-m-d H:i:s')
+                'type_id'       => 2,
+                'email'         => 'vanuth@gmail.com',
+                'phone'         => '012263561',
+                'password'      => bcrypt('123456'),
+                'is_active'     => 1,
+                'name'          => 'Ven Vanuth',
+                'avatar'        => 'static/icon/user.png',
+                'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at'    =>  Carbon::now()->format('Y-m-d H:i:s')
             ],
         ];
 

@@ -14,7 +14,7 @@ class CreateProductsTypeTable extends Migration
     public function up()
     {
         Schema::create('products_type', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id', true);
             $table->string('name', 150)->default('');
             $table->string('icon', 150)->default('');
             $table->timestamps();

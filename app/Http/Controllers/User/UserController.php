@@ -80,7 +80,7 @@ class UserController extends Controller
         $user->save();
 
         return response()->json([
-            'user' => $user,
+            'user'  => User::select('id', 'name', 'phone', 'email', 'type_id', 'avatar', 'created_at', 'is_active')->with(['type'])->find($user->id),
             'message' => 'User: ' . $user->name . ' has been successfully created.'
         ], Response::HTTP_OK);
     }
@@ -115,7 +115,7 @@ class UserController extends Controller
         }
 
         //==============================>> Start Updating data
-        $user = User::select('id', 'name', 'phone', 'email', 'type_id', 'avatar', 'created_at', 'is_active')->find($id);
+        $user = User::select('id', 'name', 'phone', 'email', 'type_id', 'avatar', 'created_at', 'is_active')->with(['type'])->find($id);
         if ($user) {
 
             $user->name      =   $req->name;

@@ -32,8 +32,8 @@ class CreateUsersTable extends Migration
         */
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->integer('type_id')->unsigned()->index()->nullable();
-            $table->foreign('type_id')->references('id')->on('users_type')->onDelete('cascade');
+            $table->integer('users_type_id')->unsigned()->index()->nullable();
+            $table->foreign('users_type_id')->references('id')->on('users_type')->onDelete('cascade');
             $table->string('name', 50)->nullable();
             $table->string('avatar', 100)->default('static/icon/user.png');
             $table->string('phone', 50)->unique()->nullable();

@@ -17,7 +17,7 @@ class OrderSeeder extends Seeder
     {
         $data = [];
 
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 1000; $i++) {
 
             $data[] = [
                 'receipt_number' => $this->generateReceiptNumber(),
@@ -45,14 +45,14 @@ class OrderSeeder extends Seeder
         $orders = Order::get();
         foreach ($orders as $order) {
 
-            $details = [];
-            $totalPrice = 0;
-            $nOfDetails = rand(1, 6); //ចំនួនផលិតផលនៅក្នុងបុង
+            $details        = [];
+            $totalPrice     = 0;
+            $nOfDetails     = rand(1, 6); //ចំនួនផលិតផលនៅក្នុងបុង
 
             for ($i = 1; $i <= $nOfDetails; $i++) {
 
-                $product = DB::table('products')->find(rand(1, 20));
-                $qty = rand(1, 10);
+                $product    = DB::table('products')->find(rand(1, 20));
+                $qty        = rand(1, 10);
 
                 $totalPrice += $product->unit_price * $qty;
 

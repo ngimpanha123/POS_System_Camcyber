@@ -12,40 +12,13 @@ class Detail extends Model
     use HasFactory;
     protected $table = 'orders_detail';
 
-    /*
-    |--------------------------------------------------------------------------
-    | BelongsTo
-    |--------------------------------------------------------------------------
-    |
-    | Table orders_detail belongsto orders depends on field order_id
-    |
-    |--------------------------------------------------------------------------
-    | Noted:
-    |--------------------------------------------------------------------------
-    |
-    | $this->belongsTo(Parent::class,'foreign_key','owner_key');
-    |
-    */
-    public function order()
+
+    public function order() //M:1
     {
         return $this->belongsTo(Order::class, 'order_id');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | BelongsTo
-    |--------------------------------------------------------------------------
-    |
-    | Table orders_detail belongsto products depends on field product_id
-    |
-    |--------------------------------------------------------------------------
-    | Noted:
-    |--------------------------------------------------------------------------
-    |
-    | $this->belongsTo(Parent::class,'foreign_key','owner_key');
-    |
-    */
-    public function product()
+    public function product() //M:1
     {
         return $this->belongsTo(Product::class, 'product_id');
     }

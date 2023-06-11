@@ -13,27 +13,14 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        /*
-        |--------------------------------------------------------------------------
-        | Adding foreign key
-        |--------------------------------------------------------------------------
-        |
-        | I am adding a foreign key to type_id field.
-        | Here, users_type table id field has biginteger datatype
-        |
-        |--------------------------------------------------------------------------
-        | Values
-        |--------------------------------------------------------------------------
-        |
-        | foreign() – Pass field name which you want to foreign key constraint.
-        | references() – Pass linking table field name.
-        | on() – Linking table name.
-        | onDelete(‘cascade’) – Enable deletion of attached data.
-        */
+
         Schema::create('users', function (Blueprint $table) {
+
             $table->increments('id', true);
+
             $table->integer('type_id')->index()->unsigned();
             $table->foreign('type_id')->references('id')->on('users_type')->onDelete('cascade');
+            
             $table->string('name', 50)->nullable();
             $table->string('avatar', 100)->default('static/icon/user.png');
             $table->string('phone', 50)->unique()->nullable();

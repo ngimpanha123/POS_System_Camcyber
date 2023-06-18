@@ -98,6 +98,6 @@ class UserSeeder extends Seeder
         | It will insert to table users of database minimart.
         |
         */
-        DB::table('users')->insert($users);
+        DB::table('user')->insert($users);
     }
 }

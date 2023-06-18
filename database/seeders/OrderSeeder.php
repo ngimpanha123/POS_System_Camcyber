@@ -31,7 +31,7 @@ class OrderSeeder extends Seeder
         }
 
         // ===>> Create Order Records
-        DB::table('orders')->insert($data);
+        DB::table('order')->insert($data);
 
         // ===>> Create Order Order Detail
         $orders = Order::get();
@@ -43,7 +43,7 @@ class OrderSeeder extends Seeder
 
             for ($i = 1; $i <= $nOfDetails; $i++) {
 
-                $product    = DB::table('products')->find(rand(1, 20));
+                $product    = DB::table('product')->find(rand(1, 20));
                 $qty        = rand(1, 10);
 
                 $totalPrice += $product->unit_price * $qty;
@@ -56,7 +56,7 @@ class OrderSeeder extends Seeder
                 ];
             }
 
-            DB::table('orders_detail')->insert($details);
+            DB::table('order_details')->insert($details);
 
 
             // ==>> Update table order for total price. 
@@ -69,7 +69,7 @@ class OrderSeeder extends Seeder
     {
 
         $number     = rand(100000, 999999);
-        $check      = DB::table('orders')->where('receipt_number', $number)->first();
+        $check      = DB::table('order')->where('receipt_number', $number)->first();
         
         if ($check) {
             return $this->generateReceiptNumber();

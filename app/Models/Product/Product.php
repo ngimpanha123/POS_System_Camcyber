@@ -4,8 +4,9 @@ namespace App\Models\Product;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Product\Type;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+use App\Models\Product\Type;
 
 class Product extends Model
 {

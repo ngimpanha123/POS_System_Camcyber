@@ -1,8 +1,10 @@
 <?php
 
+
+use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Product\ProductTypeController;
-use Illuminate\Support\Facades\Route;
 
 Route::get('/products',         [ProductController::class, 'listing']);
 Route::post('/products',        [ProductController::class, 'create']);

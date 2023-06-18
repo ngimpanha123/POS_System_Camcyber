@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group([], function () {
+    
     //============>>  Auth
     Route::group(['prefix' => 'auth'], function () {
         require(__DIR__ . '/api/auth/main.php');
@@ -39,6 +40,7 @@ Route::group([], function () {
         //============>> My Profile
         require(__DIR__ . '/api/myprofile/main.php');
     });
+
     //============>> PrintPDF
     Route::group(['prefix' => 'print'], function () {
         require(__DIR__ . '/api/printpdf/main.php');

@@ -2,10 +2,13 @@
 
 namespace App\Models\Order;
 
-use App\Models\Product\Product;
-use App\Models\Order\Order;
+// ===================================================>> Core Library
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
+// ===================================================>> Custom Library
+use App\Models\Product\Product;
+use App\Models\Order\Order;
 
 class Detail extends Model
 {

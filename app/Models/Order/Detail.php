@@ -13,7 +13,7 @@ use App\Models\Order\Order;
 class Detail extends Model
 {
     use HasFactory;
-    protected $table = 'orders_detail';
+    protected $table = 'order_details';
 
 
     public function order() //M:1

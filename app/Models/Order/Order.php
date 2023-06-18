@@ -12,7 +12,7 @@ use App\Models\Order\Detail;
 class Order extends Model
 {
     use HasFactory;
-    protected $table = 'orders';
+    protected $table = 'order';
 
     public function cashier() // M:1
     { 

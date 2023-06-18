@@ -11,7 +11,7 @@ use App\Models\Product\Type;
 class Product extends Model
 {
     use HasFactory;
-    protected $table = 'products';
+    protected $table = 'product';
 
 
     public function type(): BelongsTo //M:1

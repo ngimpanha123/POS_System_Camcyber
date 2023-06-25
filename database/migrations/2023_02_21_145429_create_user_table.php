@@ -29,9 +29,11 @@ class CreateUserTable extends Migration
             $table->dateTime('password_last_updated_at')->nullable();
             $table->dateTime('password_last_updater')->nullable();
             $table->boolean('is_active')->default(0);
+
             $table->integer('creator_id')->unsigned()->index()->nullable();
             $table->integer('updater_id')->unsigned()->index()->nullable();
             $table->integer('deleter_id')->unsigned()->index()->nullable();
+            
             $table->timestamps();
             $table->softDeletes();
         });

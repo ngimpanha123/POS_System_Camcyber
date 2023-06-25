@@ -7,6 +7,7 @@ use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Product\ProductTypeController;
 
 Route::get('/products',         [ProductController::class, 'listing']);
+Route::get('/products/{id}',    [ProductController::class, 'view']);
 Route::post('/products',        [ProductController::class, 'create']);
 Route::post('/products/{id}',   [ProductController::class, 'update']);
 Route::delete('/products/{id}', [ProductController::class, 'delete']);

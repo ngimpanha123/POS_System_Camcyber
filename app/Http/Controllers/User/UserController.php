@@ -43,10 +43,11 @@ class UserController extends Controller
         $this->validate(
             $req,
             [
+                'type_id'     => 'required|min:1|max:20',
                 'name'     => 'required|min:1|max:20',
-                'phone'    => 'required|unique:users,phone',
+                'phone'    => 'required|unique:user,phone',
                 'password' => 'required|min:6|max:20',
-                'email'    => 'unique:users,email'
+                'email'    => 'unique:user,email'
             ],
             [
                 'name.required'     => 'សូមវាយបញ្ចូលឈ្មោះរបស់អ្នក',
@@ -66,7 +67,7 @@ class UserController extends Controller
         $user->phone     =   $req->phone;
         $user->email     =   $req->email;
         $user->password  =   Hash::make($req->password);
-        $user->is_active =   $req->is_active;
+        $user->is_active =   1;
         $user->avatar    =   'static/icon/user.png';
 
         // Need to create folder before storing images

@@ -21,9 +21,22 @@ class ProductController extends Controller
         if ($req->type && $req->type != 0) {
             $data = $data->where('type_id', $req->type);
         }
-        $data = $data->orderBy('id', 'desc')
-        ->paginate($req->limit ? $req->limit : 10,'per_page');
+        $data = $data->orderBy('id', 'desc')->paginate($req->limit ? $req->limit : 10,'per_page');
         return response()->json($data, Response::HTTP_OK);
+    }
+
+    public function view($id = 0)
+    {
+        $data = Product::select('*')->find($id); 
+        if($data){
+            return response()->json($data, Response::HTTP_OK);
+        }else{
+            return response()->json([
+                'status'    => 'fil',
+                'message'   => 'គ្មានទិន្ន័យ',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        
     }
 
     public function create(Request $req)

@@ -33,7 +33,7 @@ class ProductSeeder extends Seeder
         | Add 20 Products
         |-------------------------------------------------------------------------------
         */
-        DB::table('products')->insert(
+        DB::table('product')->insert(
             [
                 [
                     'code' => 'B001',

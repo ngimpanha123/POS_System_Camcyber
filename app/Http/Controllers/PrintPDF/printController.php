@@ -9,67 +9,67 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class printController extends Controller
 {
-    function isValidDate($date){
-        //echo $date; die;
-        if (false === strtotime($date)) {
-            return false;
-        }else {
-            return true;
-        }
-    }
-    public function printInvioceOrder(Request $req)
+
+    public function printInvioceOrder($receipt_number = 0)
     {
-        return $req->all();
+
+        $header = array(
+            'Accept: application/json',
+            'Authorization: Basic YWRtaW46Q2FtQ3liZXJUZWFt',
+            'Content-Type: application/json',
+            'Cookie: render-complete=true'
+        );
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'http://localhost:5488/api/report',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode($this->getData($receipt_number)),
+            CURLOPT_HTTPHEADER => $header,
+        ));
+
+        $response = curl_exec($curl);
+        $error = curl_error($curl);
+        curl_close($curl);
+
+        return [
+            'file_base64' => base64_encode($response),
+            'error' => $error
+        ];
     }
-    public function printSale(Request $req,$number = 0)
+    
+    public static function getData($receipt_number = 0)
     {
-        $data           = Order::select('id','receipt_number','cashier_id','total_price','ordered_at')
-        ->where('receipt_number',$number)
-        ->with([
-            'cashier',
-            'details'
-        ]);
-
-        // return $data;
-                  
-
-       // ==============================>> Date Range
-       if($req->from && $req->to && $this->isValidDate($req->from) && $this->isValidDate($req->to)){
-            $data = $data->whereBetween('created_at', [$req->from." 00:00:00", $req->to." 23:59:59"]);
-        }
-        
-        // =========================== Search receipt number
-        if( $req->receipt_number && $req->receipt_number !="" ){
-            $data = $data->where('receipt_number', $req->receipt_number);
-        }
-
-        // ========================== search filter status
-        if ($req->receipt_number) {
-            $data = $data->where('receipt_number', $req->receipt_number);
-        }
-
-        // ===========================>> If Not admin, get only record that this user make order
-        $user         = JWTAuth::parseToken()->authenticate();
-        if($user->type_id == 2){ //Manager
-            $data = $data->where('cashier_id', $user->id); 
-        }
+        $data  = Order::select('id', 'receipt_number', 'cashier_id', 'total_price', 'ordered_at')
+            ->where('receipt_number', $receipt_number)
+            ->with([
+                'cashier',
+                'details'
+            ]);
 
         $data = $data->orderBy('id', 'desc')->get();
-        
+
         $total = 0;
-        foreach($data as $row){
+        foreach ($data as $row) {
             $total += $row->total_price;
-        } 
-        
+        }
+
         $payload = [
-            'from'          => $req->from,
-            'to'            => $req->to,
             'total'         => $total,
             'data'          => $data,
 
         ];
-
-        return $payload;
-        // return view('printing.sale.sale', $payload);
+        $template = [
+            "template" => [
+                "name" => "/invoice-pos/invoice-main",
+            ],
+            "data" => $payload,
+        ];
+        return $template;
     }
 }

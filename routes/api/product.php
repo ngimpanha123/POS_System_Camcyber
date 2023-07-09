@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Product\ProductTypeController;
 
-Route::get('/products',         [ProductController::class, 'listing']);
-Route::get('/products/{id}',    [ProductController::class, 'view']);
+Route::get('/products',         [ProductController::class, 'listing']); // Read Many Records
+Route::get('/products/{id}',    [ProductController::class, 'view']); // Read 1 Record
 Route::post('/products',        [ProductController::class, 'create']);
 Route::post('/products/{id}',   [ProductController::class, 'update']);
 Route::delete('/products/{id}', [ProductController::class, 'delete']);

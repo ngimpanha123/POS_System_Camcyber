@@ -22,8 +22,10 @@ class POSController extends Controller
         ->get();
         return response()->json($data, Response::HTTP_OK);
     }
+
     public function makeOrder(Request $req)
     {
+        //==============================>> Get Current Login User
         $user = JWTAuth::parseToken()->authenticate();
 
         //==============================>> Check validation
@@ -42,12 +44,12 @@ class POSController extends Controller
         $totalPrice = 0;
         $cart       = json_decode($req->cart);
 
+        //return $cart; 
+
         foreach ($cart as $productId => $qty) {
 
             $product = Product::find($productId);
             if ($product) {
-
-                //Check Stock
 
                 $details[] = [
                     'order_id'      => $order->id,
@@ -60,10 +62,10 @@ class POSController extends Controller
             }
         }
 
-        //Save tot Details
+        // ===>> Save tot Details
         Detail::insert($details);
 
-        //Update Order
+        // ===>> Update Order
         $order->total_price     = $totalPrice;
         $order->total_received  = $totalPrice;
         $order->paid_at         = Date('Y-m-d H:i:s');
@@ -72,8 +74,10 @@ class POSController extends Controller
 
         $data = Order::select('*')
         ->with([
-            'cashier',
-            'details'
+            'cashier:id,name',
+            'details:id,order_id,product_id,unit_price,qty', 
+            'details.product:id,name,type_id',
+            'details.product.type:id,name'
         ])
         ->find($order->id);
 
@@ -81,10 +85,10 @@ class POSController extends Controller
 
 
         return response()->json([
-            'cart'          => $cart,
+            //'cart'          => $cart,
             'order'         => $data,
-            'details'       => $details,
-            'total_price'   => $totalPrice,
+            //'details'       => $details,
+            //'total_price'   => $totalPrice,
             'message'       => 'ការបញ្ជាទិញត្រូវបានបង្កើតដោយជោគជ័យ។'
         ], Response::HTTP_OK);
     }

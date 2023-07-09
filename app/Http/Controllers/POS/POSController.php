@@ -36,6 +36,7 @@ class POSController extends Controller
         // ===>> Create Order
         $order                  = new Order;
         $order->cashier_id      = $user->id;
+        $order->total_price     = 0;
         $order->receipt_number  = $this->generateReceiptNumber();
         $order->save();
 
@@ -67,14 +68,16 @@ class POSController extends Controller
 
         // ===>> Update Order
         $order->total_price     = $totalPrice;
-        $order->total_received  = $totalPrice;
-        $order->paid_at         = Date('Y-m-d H:i:s');
         $order->ordered_at      = Date('Y-m-d H:i:s');
         $order->save();
 
+
+        // ===> Get Data for Client Reponse to view the order in Popup.
         $data = Order::select('*')
         ->with([
-            'cashier:id,name',
+            'cashier:id,name,type_id',
+            'cashier.type:id,name',
+            
             'details:id,order_id,product_id,unit_price,qty', 
             'details.product:id,name,type_id',
             'details.product.type:id,name'

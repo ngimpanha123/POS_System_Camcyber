@@ -21,8 +21,7 @@ class ProductController extends Controller
         if ($req->type && $req->type != 0) {
             $data = $data->where('type_id', $req->type);
         }
-        $data = $data->orderBy('id', 'desc')
-        ->paginate($req->limit ? $req->limit : 10,'per_page');
+        $data = $data->orderBy('id', 'desc')->paginate($req->limit ? $req->limit : 10,'per_page');
         return response()->json($data, Response::HTTP_OK);
     }
 

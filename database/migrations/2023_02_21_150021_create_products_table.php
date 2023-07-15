@@ -31,8 +31,8 @@ class CreateProductsTable extends Migration
         | onDelete(‘cascade’) – Enable deletion of attached data.
         */
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->integer('type_id')->unsigned()->default(1);
+            $table->increments('id', true);
+            $table->integer('type_id')->index()->unsigned();
             $table->foreign('type_id')->references('id')->on('products_type')->onDelete('cascade');
             $table->string('code',50)->nullable();
             $table->string('name', 150)->default('');

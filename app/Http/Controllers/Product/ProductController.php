@@ -13,16 +13,35 @@ class ProductController extends Controller
 {
     public function listing(Request $req)
     {
-        $data = Product::select('*')->with(['type']);
+        $data = Product::select('*')
+        ->with(['type'])
+        ;
         //Filter
         if ($req->key && $req->key != '') {
             $data = $data->where('code', 'LIKE', '%' . $req->key . '%')->Orwhere('name', 'LIKE', '%' . $req->key . '%');
         }
+
         if ($req->type && $req->type != 0) {
             $data = $data->where('type_id', $req->type);
         }
+
         $data = $data->orderBy('id', 'desc')->paginate($req->limit ? $req->limit : 10,'per_page');
         return response()->json($data, Response::HTTP_OK);
+
+    }
+
+    public function view($id = 0)
+    {
+        $data = Product::select('*')->find($id); 
+        if($data){
+            return response()->json($data, Response::HTTP_OK);
+        }else{
+            return response()->json([
+                'status'    => 'fil',
+                'message'   => 'គ្មានទិន្ន័យ',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        
     }
 
     public function create(Request $req)
@@ -31,23 +50,27 @@ class ProductController extends Controller
         $this->validate(
             $req,
             [
-                'name'              => 'required|max:20',
+                'name'              => 'required|max:50',
                 'code'              => 'required|max:20',
-                'unit_price'        => 'required',
+                'unit_price'        => 'required|numeric',
                 'type_id'           => 'required|exists:products_type,id'
             ],
             [
                 'name.required'         => 'សូមបញ្ចូលឈ្មោះផលិតផល',
-                'name.max'              => 'ឈ្មោះផលិតផលមិនអាចលើសពី២០ខ្ទង់',
-                'type_id.exists'        => 'សូមជ្រើសរើសឈ្មោះផលិតផល',
+                'name.max'              => 'ឈ្មោះផលិតផលមិនអាចលើសពី50ខ្ទង់',
+
                 'code.required'         => 'សូមបញ្ចូលឈ្មោះលេខកូដផលិតផល',
                 'code.max'              => 'សូមបញ្ចូលឈ្មោះលេខកូដផលិតផលមិនអាចលើសពី២០ខ្ទង់',
-                'unit_price.required'   => 'សូមបញ្ចូលឈ្មោះ unit_price'
+
+                'unit_price.required'   => 'សូមបញ្ចូលតម្លៃរាយ', 
+                'unit_price.numeric'    => 'សូមបញ្ចូលតម្លៃរាយជាលេខ', 
+
+                'type_id.exists'        => 'សូមជ្រើសរើសឈ្មោះផលិតផល អោយបានត្រឹមត្រូវ កុំបោកពេក'
+                
             ]
         );
 
-        //==============================>> Start Adding data
-
+        //==============================>> Start Saving Data to Database
         $product                =   new Product;
         $product->name          =   $req->name;
         $product->code          =   $req->code;
@@ -55,11 +78,12 @@ class ProductController extends Controller
         $product->unit_price    =   $req->unit_price;
         $product->save();
 
-        //==============================>> Start Uploading Image     
+        //==============================>> Start Uploading Image to File Server   
         if ($req->image) {
             // Need to create folder before storing images       
             $folder = Carbon::today()->format('d') . '-' . Carbon::today()->format('M') . '-' . Carbon::today()->format('Y');
             $image  = FileUpload::uploadFile($req->image, 'products/' . $folder, $req->fileName);
+            
             if ($image['url']) {
                 $product->image = $image['url'];
                 $product->save();

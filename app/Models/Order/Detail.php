@@ -2,50 +2,26 @@
 
 namespace App\Models\Order;
 
-use App\Models\Product\Product;
-use App\Models\Order\Order;
+// ===================================================>> Core Library
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
+// ===================================================>> Custom Library
+use App\Models\Product\Product;
+use App\Models\Order\Order;
 
 class Detail extends Model
 {
     use HasFactory;
-    protected $table = 'orders_detail';
+    protected $table = 'order_details';
 
-    /*
-    |--------------------------------------------------------------------------
-    | BelongsTo
-    |--------------------------------------------------------------------------
-    |
-    | Table orders_detail belongsto orders depends on field order_id
-    |
-    |--------------------------------------------------------------------------
-    | Noted:
-    |--------------------------------------------------------------------------
-    |
-    | $this->belongsTo(Parent::class,'foreign_key','owner_key');
-    |
-    */
-    public function order()
+
+    public function order() //M:1
     {
         return $this->belongsTo(Order::class, 'order_id');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | BelongsTo
-    |--------------------------------------------------------------------------
-    |
-    | Table orders_detail belongsto products depends on field product_id
-    |
-    |--------------------------------------------------------------------------
-    | Noted:
-    |--------------------------------------------------------------------------
-    |
-    | $this->belongsTo(Parent::class,'foreign_key','owner_key');
-    |
-    */
-    public function product()
+    public function product() //M:1
     {
         return $this->belongsTo(Product::class, 'product_id');
     }

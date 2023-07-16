@@ -8,9 +8,10 @@ use Illuminate\Http\Response;
 
 class DashboardController extends Controller
 {
-    public function getInfo()
+    public function getDashboardInfo()
     {
         $totalSaleToday = Order::sum('total_price');
+
         $data = [
             'total_sale_today' => $totalSaleToday
         ];

@@ -4,29 +4,17 @@ namespace App\Models\Product;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Product\Type;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+use App\Models\Product\Type;
 
 class Product extends Model
 {
     use HasFactory;
-    protected $table = 'products';
+    protected $table = 'product';
 
-    /*
-    |--------------------------------------------------------------------------
-    | BelongsTo
-    |--------------------------------------------------------------------------
-    |
-    | Table products belongsto products_type depends on field type_id
-    |
-    |--------------------------------------------------------------------------
-    | Noted:
-    |--------------------------------------------------------------------------
-    |
-    | $this->belongsTo(Parent::class,'foreign_key','owner_key');
-    |
-    */
-    public function type(): BelongsTo
+
+    public function type(): BelongsTo //M:1
     {
         return $this->belongsTo(Type::class, 'type_id','id')->select('id', 'name');
     }

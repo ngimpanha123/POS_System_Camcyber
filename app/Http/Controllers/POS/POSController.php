@@ -88,10 +88,7 @@ class POSController extends Controller
 
 
         return response()->json([
-            //'cart'          => $cart,
             'order'         => $data,
-            //'details'       => $details,
-            //'total_price'   => $totalPrice,
             'message'       => 'ការបញ្ជាទិញត្រូវបានបង្កើតដោយជោគជ័យ។'
         ], Response::HTTP_OK);
     }

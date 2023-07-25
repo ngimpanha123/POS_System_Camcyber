@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\POS;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\TelegramBot\TelegramOrderController;
 use App\Models\Order\Detail;
 use App\Models\Order\Order;
 use App\Models\Product\Product;
@@ -85,7 +86,10 @@ class POSController extends Controller
         ->find($order->id);
 
         //ToDo: Send Notification
-
+        $nameUser = [
+            'cashier_name' => $user->name
+        ];
+        $senNoti = TelegramOrderController::sendOrderNotification($order, $nameUser['cashier_name']);
 
         return response()->json([
             //'cart'          => $cart,

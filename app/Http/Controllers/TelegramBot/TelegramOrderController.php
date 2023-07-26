@@ -28,7 +28,7 @@ class TelegramOrderController extends Controller
 ----------------------------------------
 ផលិតផល​   |បរិមាណ   |តម្លៃ(រៀល)
 '.$prodcutList.' 
-          |'.$totalProduct.'   | '.$order->total_price.'
+    |'.$totalProduct.'   | '.$order->total_price.'
 - កាលបរិច្ឆេទ ​៖​ '.$order->ordered_at.'
             ',
             'parse_mode' => 'HTML'

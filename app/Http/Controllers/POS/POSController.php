@@ -86,10 +86,7 @@ class POSController extends Controller
         ->find($order->id);
 
         //ToDo: Send Notification
-        $nameUser = [
-            'cashier_name' => $user->name
-        ];
-        $senNoti = TelegramOrderController::sendOrderNotification($order, $nameUser['cashier_name']);
+        $sendOrderNotification = TelegramOrderController::sendOrderNotification($order);
 
         return response()->json([
             //'cart'          => $cart,

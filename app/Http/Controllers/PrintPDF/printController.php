@@ -12,16 +12,17 @@ class printController extends Controller
 
     public function printInvioceOrder($receipt_number = 0)
     {
-
+        return $this->getData($receipt_number);
         $header = array(
             'Accept: application/json',
-            'Authorization: Basic YWRtaW46Q2FtQ3liZXJUZWFt',
+            'Authorization: Basic c29uZ2hha19jaHJlY2g6aGFrQDAxMjI2MzU2Mg==',
             'Content-Type: application/json',
             'Cookie: render-complete=true'
         );
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'http://localhost:5488/api/report',
+            // CURLOPT_URL => 'http://localhost:5488/api/report',
+            CURLOPT_URL => 'https://songhak.jsreportonline.net/api/report',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -50,6 +51,7 @@ class printController extends Controller
             ->with([
                 'cashier',
                 'details'
+
             ]);
 
         $data = $data->orderBy('id', 'desc')->get();
@@ -66,7 +68,7 @@ class printController extends Controller
         ];
         $template = [
             "template" => [
-                "name" => "/invoice-pos/invoice-main",
+                "name" => "/POS-Order/POS-Inovice",
             ],
             "data" => $payload,
         ];

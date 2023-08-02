@@ -13,7 +13,7 @@ class TelegramOrderController extends Controller
         $prodcutList = '';
         $totalProduct = 0;
         foreach ($order->details as $detail){
-            $prodcutList .=$detail->product->name. '         | ' .$detail->unit_price . '                |' .$detail->qty. '              | ' .$detail->total_price_this_product. PHP_EOL;
+            $prodcutList .=$detail->product->name. '    | ' .$detail->unit_price . '    |' .$detail->qty. '     | ' .$detail->total_price_this_product. PHP_EOL;
             $totalProduct += $detail->qty;
         }
         if($order){
@@ -21,12 +21,14 @@ class TelegramOrderController extends Controller
             $res = Telegram::sendMessage([
             'chat_id' => $chatID,
             'text'    => ' <b>ការបញ្ជាទិញទទួលបានជោគជ័យ!</b>
+
 - លេខវិកយប័ត្រ៖​​ '.$order->receipt_number.'
 - អ្នកគិតលុយ  ៖​ '.$order->cashier->name.'
 ----------------------------------------
-ផលិតផល​      |តម្លៃដើម(រៀល)  |បរិមាណ    | ទិញសរុប
+ផលិតផល​      |តម្លៃដើម(៛)  |បរិមាណ    | ទិញសរុប(៛)
 '.$prodcutList.' 
-<b>* សរុប៖​ </b>|'.$totalProduct.' ទំនិញ   | '.$order->total_price.' រៀល
+<b>* សរុបទាំងអស់៖​ </b>|'.$totalProduct.' ទំនិញ   | '.$order->total_price.' ៛
+
 - កាលបរិច្ឆេទ ​៖​ '.$order->ordered_at.'
             ',
             'parse_mode' => 'HTML'

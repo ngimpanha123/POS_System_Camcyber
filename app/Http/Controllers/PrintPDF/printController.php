@@ -12,7 +12,7 @@ class printController extends Controller
 
     public function printInvioceOrder($receipt_number = 0)
     {
-        return $this->getData($receipt_number);
+        //return $this->getData($receipt_number);
         $header = array(
             'Accept: application/json',
             'Authorization: Basic c29uZ2hha19jaHJlY2g6aGFrQDAxMjI2MzU2Mg==',

@@ -21,6 +21,7 @@ class POSController extends Controller
             'products:id,name,image,type_id,unit_price'
         ])
         ->get();
+        
         return response()->json($data, Response::HTTP_OK);
     }
 
@@ -87,8 +88,8 @@ class POSController extends Controller
         ])
         ->find($order->id);
 
-        //ToDo: Send Notification
-        $sendOrderNotification = TelegramOrderController::sendOrderNotification($order);
+        // Send Notification
+        // $sendOrderNotification = TelegramOrderController::sendOrderNotification($order);
 
         return response()->json([
             'order'         => $data,

@@ -23,10 +23,10 @@ class Order extends Model
     public function details()// 1:M
     { 
         return $this->hasMany(Detail::class, 'order_id')
-        // ->select('id', 'order_id', 'qty', 'product_id', 'unit_price')
-        // ->with([
-        //     'product:id,name,image'
-        // ])
+         ->select('id', 'order_id', 'qty', 'product_id', 'unit_price', 'total_price_this_product')
+        ->with([
+            'product:id,name,image'
+        ])
         ;
     }
 }

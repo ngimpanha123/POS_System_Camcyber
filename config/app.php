@@ -200,6 +200,8 @@ return [
          */
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
+        // Telegram Bot
+        Telegram\Bot\Laravel\TelegramServiceProvider::class,
     ],
 
     /*

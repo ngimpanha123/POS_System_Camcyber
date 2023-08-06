@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\POS;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\TelegramBot\TelegramOrderController;
 use App\Models\Order\Detail;
 use App\Models\Order\Order;
 use App\Models\Product\Product;
@@ -51,12 +52,14 @@ class POSController extends Controller
 
             $product = Product::find($productId);
             if ($product) {
-
+                $total_price_this_product = 0;
+                $total_price_this_product =$qty * $product->unit_price;
                 $details[] = [
                     'order_id'      => $order->id,
                     'product_id'    => $productId,
                     'qty'           => $qty,
-                    'unit_price'    => $product->unit_price
+                    'unit_price'    => $product->unit_price,
+                    'total_price_this_product' => $total_price_this_product
                 ];
 
                 $totalPrice +=  $qty * $product->unit_price;
@@ -78,14 +81,14 @@ class POSController extends Controller
             'cashier:id,name,type_id',
             'cashier.type:id,name',
             
-            'details:id,order_id,product_id,unit_price,qty', 
+            'details:id,order_id,product_id,unit_price,qty,total_price_this_product', 
             'details.product:id,name,type_id',
             'details.product.type:id,name'
         ])
         ->find($order->id);
 
         //ToDo: Send Notification
-
+        $sendOrderNotification = TelegramOrderController::sendOrderNotification($order);
 
         return response()->json([
             'order'         => $data,

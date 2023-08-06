@@ -40,19 +40,21 @@ class OrderSeeder extends Seeder
             $details        = [];
             $totalPrice     = 0; // To Save in table order
             $nOfDetails     = rand(1, 6); //ចំនួនផលិតផលនៅក្នុងបុង
+            $total_price_this_product = 0;
 
             for ($i = 1; $i <= $nOfDetails; $i++) {
 
                 $product    = DB::table('product')->find(rand(1, 20));
                 $qty        = rand(1, 10);
-
+                $total_price_this_product = $product->unit_price * $qty;
                 $totalPrice += $product->unit_price * $qty;
 
                 $details[] = [
                     'order_id'      => $order->id,
                     'product_id'    => $product->id,
                     'qty'           => $qty,
-                    'unit_price'    => $product->unit_price
+                    'unit_price'    => $product->unit_price,
+                    'total_price_this_product' => $total_price_this_product
                 ];
             }
 

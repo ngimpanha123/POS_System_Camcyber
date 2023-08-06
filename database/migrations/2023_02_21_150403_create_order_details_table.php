@@ -25,6 +25,7 @@ class CreateOrderDetailsTable extends Migration
             
             $table->double('unit_price')->nullable();
             $table->integer('qty')->unsigned()->default(0);
+            $table->double('total_price_this_product')->nullable();
             $table->decimal('discount', 10, 2)->default(0);
             
             $table->timestamps();

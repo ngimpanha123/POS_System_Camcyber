@@ -12,9 +12,10 @@ class ProductTypeController extends Controller
     public function listing()
     {
         $data = Type::select('id', 'name')
-            ->withCount(['products as n_of_products'])
-            ->orderBy('name', 'ASC')
-            ->get();
+        ->withCount(['products as n_of_products'])
+        ->orderBy('name', 'ASC')
+        ->get();
+        
         return response()->json($data, Response::HTTP_OK);
     }
 
@@ -61,6 +62,7 @@ class ProductTypeController extends Controller
         //==============================>> Start Updating data
         $product_type           = Type::find($id);
         if ($product_type) {
+
             $product_type->name = $req->name;
             $product_type->save();
 
@@ -69,13 +71,17 @@ class ProductTypeController extends Controller
                 'message'       => 'ប្រភេទផលិតផលត្រូវបានកែប្រែជោគជ័យ!',
                 'product_type'  => $product_type,
             ], Response::HTTP_OK);
+
         } else {
+
             return response()->json([
                 'status'    => 'បរាជ័យ',
                 'message'   => 'ទិន្នន័យមិនត្រឹមត្រូវ',
             ], Response::HTTP_BAD_REQUEST);
+
         }
     }
+
     public function delete($id = 0)
     {
         $data = Type::find($id);

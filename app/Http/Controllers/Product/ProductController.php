@@ -34,8 +34,11 @@ class ProductController extends Controller
     {
         $data = Product::select('*')->find($id); 
         if($data){
+
             return response()->json($data, Response::HTTP_OK);
+            
         }else{
+
             return response()->json([
                 'status'    => 'fil',
                 'message'   => 'គ្មានទិន្ន័យ',
@@ -84,10 +87,10 @@ class ProductController extends Controller
             $folder = Carbon::today()->format('d') . '-' . Carbon::today()->format('M') . '-' . Carbon::today()->format('Y');
             $image  = FileUpload::uploadFile($req->image, 'products/' . $folder, $req->fileName);
             
-            if ($image['url']) {
+            //if ($image['url']) {
                 $product->image = $image['url'];
                 $product->save();
-            }
+            //}
         }
 
         return response()->json([
@@ -125,12 +128,19 @@ class ProductController extends Controller
             $product->type_id       = $req->type_id;
             $product->unit_price    = $req->unit_price;
 
+            // Save to DB
             $product->save();
 
-            // Need to create folder before storing images
-            $folder = Carbon::today()->format('d') . '-' . Carbon::today()->format('M') . '-' . Carbon::today()->format('Y');
+            
+            // Image Upload
             if ($req->image) {
+
+                // Need to create folder before storing images
+                $folder = Carbon::today()->format('d') . '-' . Carbon::today()->format('M') . '-' . Carbon::today()->format('Y');
                 $image  = FileUpload::uploadFile($req->image, 'products/' . $folder, $req->fileName);
+
+                //return $image; 
+
                 if ($image['url']) {
                     $product->image = $image['url'];
                     $product->save();
@@ -148,11 +158,15 @@ class ProductController extends Controller
                 'message'   => 'ផលិតផលត្រូវបានកែប្រែជោគជ័យ',
                 'product'   => $product,
             ], Response::HTTP_OK);
+
         } else {
+
             return response()->json([
+
                 'status'    => 'បរាជ័យ',
                 'message'   => 'ទិន្នន័យមិនត្រឹមត្រូវ',
             ], Response::HTTP_BAD_REQUEST);
+
         }
     }
     public function delete($id = 0)

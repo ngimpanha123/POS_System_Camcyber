@@ -29,24 +29,33 @@ class FileController extends Controller
         $file      = $request->file;
         $extension = '';
 
-        $info = substr($file, 5, strpos($file, ';') - 5);
+        $info       = substr($file, 5, strpos($file, ';') - 5);
         $extension = explode("/", $info);
+
         if (isset($extension[1])) {
+            
             $ext = strtolower($extension[1]);
             if (strpos($ext, '+') !== false) {
-                $result =  explode("+", $ext);
-                $extension = $result[0];
+
+                $result     =  explode("+", $ext);
+                $extension  = $result[0];
+
             } else {
+
                 $extension = $ext;
+
             }
+
         }
 
         //get file
         $image_parts = explode(";base64,", $file);
         $image_base64 = base64_decode($image_parts[1]);
+        
         if (!$fileName) {
             $fileName = uniqid();
         }
+
         //Find folder exists or not
         $mkdir_folder = 'uploads/' . $project . '/' . $folder;
         if (!file_exists($mkdir_folder)) {
@@ -55,9 +64,11 @@ class FileController extends Controller
         //Find full url
         $uri = 'uploads/' . $project . '/' . $folder . '/' . $fileName . '.' . $extension;
         file_put_contents($uri, $image_base64);
+
         return response()->json([
             'status_code' => 200,
             'url' => 'uploads/' . $project . '/' . $folder . '/' . $fileName . '.' . $extension
         ], 200);
+
     }
 }

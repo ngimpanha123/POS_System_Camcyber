@@ -25,27 +25,31 @@ class MyProfileController extends Controller
         $user_id = JWTAuth::parseToken()->authenticate()->id;
         $this->validate($req, [
             'name'  => 'required|max:60',
-            'phone' => 'required|regex:/(^[0][0-9].{7}$)|(^[0][0-9].{8}$)/'
+            'phone' => 'required|min:9|max:10'
             ,
-        ],[
+        ],
+        [
             'name.required' => 'សូមបញ្ចូលឈ្មោះ',
             'name.max'      => 'ឈ្មោះមិនអាចលើសពី៦០',
             'phone.required'=> 'សូមបញ្ចូលលេខទូរស័ព្ទ',
-            'phone.regex'   => 'សូមបញ្ចូលលេខទូរស័ព្ទឲ្យបានត្រឹមត្រូវ'
+            'phone.min'     => 'សូមបញ្ចូលលេខទូរស័ព្ទយ៉ាងតិច៩ខ្ទង់',
+            'phone.max'     => 'លេខទូរស័ព្ទយ៉ាងច្រើនមិនលើសពី១០ខ្ទង់'
+            
         ]);
 
         //========================================================>>>> Start to update user
         $user = User::findOrFail($user_id);
         $user->name = $req->name;
         $user->phone = $req->phone;
+        $user->email = $req->email;
         $user->updated_at = Carbon::now()->format('Y-m-d H:i:s');
 
         //Start to upload image 
-        $res    = FileUpload::uploadFile($req->image, 'my-profile', $req->fileName);
-        if ($res) {
-            if (isset($res['url'])) {
-                if ($res['url'] != '') {
-                    $user->avatar          = $res['url'];
+        $image    = FileUpload::uploadFile($req->image, 'users', $req->fileName);
+        if ($image) {
+            if (isset($image['url'])) {
+                if ($image['url'] != '') {
+                    $user->avatar          = $image['url'];
                 }
             }
         }

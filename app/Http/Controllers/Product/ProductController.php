@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Controllers\Controller;
-use App\Models\Product\Product;
-use App\Services\FileUpload;
-use Carbon\Carbon;
+// ================================>> Core Library
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+
+// ================================>> Third Party
+use Carbon\Carbon;
+
+// ================================>> Custome Library
+use App\Http\Controllers\Controller;
+use App\Models\Product\Product;
+
+use App\Services\FileUpload;
 
 class ProductController extends Controller
 {
@@ -98,8 +104,10 @@ class ProductController extends Controller
             'message'   => 'ផលិតផលត្រូវបានបង្កើតដោយជោគជ័យ។'
         ], Response::HTTP_OK);
     }
+
     public function update(Request $req, $id = 0)
     {
+        // return "Yes"; 
         //==============================>> Check validation
         $this->validate(
             $req,
@@ -136,17 +144,24 @@ class ProductController extends Controller
             if ($req->image) {
 
                 // Need to create folder before storing images
-                $folder = Carbon::today()->format('d') . '-' . Carbon::today()->format('M') . '-' . Carbon::today()->format('Y');
-                $image  = FileUpload::uploadFile($req->image, 'products/' . $folder, $req->fileName);
+                //$folder = Carbon::today()->format('d') . '-' . Carbon::today()->format('M') . '-' . Carbon::today()->format('Y');
+                $folder = Carbon::today()->format('d-m-y');
+
+                //return $folder; 
+
+                $image  = FileUpload::uploadFile($req->image, 'products/', $req->fileName);
 
                 //return $image; 
 
                 if ($image['url']) {
-                    $product->image = $image['url'];
+
+                    $product->image     = $image['url'];
                     $product->save();
+
                 }
             }
 
+            // Prepare Data backt to Client
             $product = Product::select('*')
             ->with([
                 'type'
@@ -165,10 +180,12 @@ class ProductController extends Controller
 
                 'status'    => 'បរាជ័យ',
                 'message'   => 'ទិន្នន័យមិនត្រឹមត្រូវ',
+                
             ], Response::HTTP_BAD_REQUEST);
 
         }
     }
+
     public function delete($id = 0)
     {
         $data = Product::find($id);

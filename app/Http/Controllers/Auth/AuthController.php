@@ -56,7 +56,7 @@ class AuthController extends Controller
 
         try {
 
-            JWTAuth::factory()->setTTL(120); //120 នាទី
+            JWTAuth::factory()->setTTL(1200); //1200 នាទី
             $token = JWTAuth::attempt($credentials);
 
             if (!$token) {
@@ -98,7 +98,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token'  => $token,
             'token_type'    => 'bearer',
-            'expires_in'    => JWTAuth::factory()->getTTL() * 60 . ' seconds',
+            'expires_in'    => JWTAuth::factory()->getTTL() / 60 . ' hours',
             'user'          => $dataUser,
             'role'          => $role
         ], Response::HTTP_OK);

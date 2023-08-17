@@ -23,43 +23,52 @@ class MyProfileController extends Controller
     public function update(Request $req)
     {
         $user_id = JWTAuth::parseToken()->authenticate()->id;
-        $this->validate($req, [
-            'name'  => 'required|max:60',
-            'phone' => 'required|min:9|max:10'
-            ,
-        ],
-        [
-            'name.required' => 'សូមបញ្ចូលឈ្មោះ',
-            'name.max'      => 'ឈ្មោះមិនអាចលើសពី៦០',
-            'phone.required'=> 'សូមបញ្ចូលលេខទូរស័ព្ទ',
-            'phone.min'     => 'សូមបញ្ចូលលេខទូរស័ព្ទយ៉ាងតិច៩ខ្ទង់',
-            'phone.max'     => 'លេខទូរស័ព្ទយ៉ាងច្រើនមិនលើសពី១០ខ្ទង់'
-            
-        ]);
+        $this->validate(
+            $req,
+            [
+                'name'  => 'required|max:60',
+                'phone' => 'required|min:9|max:10',
+            ],
+            [
+                'name.required' => 'សូមបញ្ចូលឈ្មោះ',
+                'name.max'      => 'ឈ្មោះមិនអាចលើសពី៦០',
+                'phone.required' => 'សូមបញ្ចូលលេខទូរស័ព្ទ',
+                'phone.min'     => 'សូមបញ្ចូលលេខទូរស័ព្ទយ៉ាងតិច៩ខ្ទង់',
+                'phone.max'     => 'លេខទូរស័ព្ទយ៉ាងច្រើនមិនលើសពី១០ខ្ទង់'
+
+            ]
+        );
 
         //========================================================>>>> Start to update user
         $user = User::findOrFail($user_id);
-        $user->name = $req->name;
-        $user->phone = $req->phone;
-        $user->email = $req->email;
-        $user->updated_at = Carbon::now()->format('Y-m-d H:i:s');
+        if ($user) {
+            $user->name = $req->name;
+            $user->phone = $req->phone;
+            $user->email = $req->email;
+            $user->updated_at = Carbon::now()->format('Y-m-d H:i:s');
 
-        //Start to upload image 
-        $image    = FileUpload::uploadFile($req->image, 'users', $req->fileName);
-        if ($image) {
-            if (isset($image['url'])) {
-                if ($image['url'] != '') {
-                    $user->avatar          = $image['url'];
+            //Start to upload image 
+            $image    = FileUpload::uploadFile($req->image, 'my-profiles', $req->fileName);
+            if ($image) {
+                if (isset($image['url'])) {
+                    if ($image['url'] != '') {
+                        $user->avatar          = $image['url'];
+                    }
                 }
             }
-        }
-        $user->save();
+            $user->save();
 
-        return response()->json([
-            'status'    => 'ជោគជ័យ',
-            'message'   => 'ការកែប្រែបានជោគជ័យ',
-            'data'      => $user
-        ], Response::HTTP_OK);
+            return response()->json([
+                'status'    => 'ជោគជ័យ',
+                'message'   => '* ព័ត៌មានផ្ទាល់ខ្លួនរបស់អ្នកត្រូវបានកែប្រែ *',
+                'data'      => $user
+            ], Response::HTTP_OK);
+        }else{
+            return response()->json([
+                'status' => 'error',
+                'message' => 'ទិន្នន័យរបស់អ្នកមិនត្រឹមត្រូវ'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
     public function changePassword(Request $req)
     {
@@ -88,7 +97,7 @@ class MyProfileController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'ការកែបានជោគជ័យ!'
+                'message' => 'លេខសម្ងាត់របស់អ្នកត្រូវបានកែប្រែដោយជោគជ័យ'
             ], Response::HTTP_OK);
         } else {
             return response()->json([

@@ -19,8 +19,8 @@ class FileUpload
 
         curl_setopt_array($curl, array(
 
-            //CURLOPT_URL => env('FILE_URL') . "/api/set-file",
-            CURLOPT_URL => "http://file:8000/api/set-file",
+            CURLOPT_URL => env('FILE_URL') . "/api/set-file",
+            // CURLOPT_URL => "http://file:8000/api/set-file",
 
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",

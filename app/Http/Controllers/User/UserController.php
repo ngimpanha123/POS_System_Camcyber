@@ -172,11 +172,15 @@ class UserController extends Controller
     {
         //==============================>> Check validation
         $this->validate($req, [
-            'password' => 'required|min:6|max:20'
+            'password' => 'required|min:6|max:20',
+            'confirm_password'  => 'required|same:password',
         ], [
             'password.required' => 'សូមបញ្ចូលលេខសម្ងាត់',
             'password.min'      => 'សូមបញ្ចូលលេខសម្ងាត់ធំជាងឬស្មើ៦',
-            'password.max'      => 'សូមបញ្ចូលលេខសម្ងាត់តូចឬស្មើ២០'
+            'password.max'      => 'សូមបញ្ចូលលេខសម្ងាត់តូចឬស្មើ២០',
+            'confirm_password.required' => 'សូមបញ្ចូលបញ្ជាក់ពាក្យសម្ងាត់',
+            'confirm_password.same'     => 'សូមបញ្ចូលបញ្ជាក់ពាក្យសម្ងាត់ឲ្យដូចលេខសម្ងាត់',
+
         ]);
 
         //==============================>> Start Updating Password
@@ -185,9 +189,9 @@ class UserController extends Controller
             $user->password  = Hash::make($req->password);
             $user->password_last_updated_at = Carbon::now()->format('Y-m-d H:i:s');
             $user->save();
-            return response(['message' => 'លេខសម្ងាត់របស់ត្រូវបានកែប្រែ'], Response::HTTP_OK);
+            return response()->json(['message' => 'លេខសម្ងាត់របស់ត្រូវបានកែប្រែ', 'user' => $user], Response::HTTP_OK);
         } else {
-            return response(['message' => 'មិនមានទិន្នន័យក្នុងប្រព័ន្ធ'], Response::HTTP_BAD_REQUEST);
+            return response()->json(['message' => 'មិនមានទិន្នន័យក្នុងប្រព័ន្ធ'], Response::HTTP_BAD_REQUEST);
         }
     }
     public function getType()

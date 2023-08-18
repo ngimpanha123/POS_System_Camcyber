@@ -33,7 +33,7 @@ class POSController extends Controller
         //==============================>> Check validation
         $this->validate($req, [
             'cart' => 'required|json',
-            // 'status' => 'required'
+            'status_id' => 'required'
         ]);
 
         // ===>> Create Order

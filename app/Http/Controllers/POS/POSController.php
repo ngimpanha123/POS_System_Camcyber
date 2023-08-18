@@ -32,12 +32,14 @@ class POSController extends Controller
 
         //==============================>> Check validation
         $this->validate($req, [
-            'cart' => 'required|json'
+            'cart' => 'required|json',
+            // 'status' => 'required'
         ]);
 
         // ===>> Create Order
         $order                  = new Order;
         $order->cashier_id      = $user->id;
+        $order->status_id       = $req->status_id;
         $order->total_price     = 0;
         $order->receipt_number  = $this->generateReceiptNumber();
         $order->save();
@@ -84,7 +86,9 @@ class POSController extends Controller
             
             'details:id,order_id,product_id,unit_price,qty,total_price_this_product', 
             'details.product:id,name,type_id',
-            'details.product.type:id,name'
+            'details.product.type:id,name',
+            
+            'status:id,name,color'
         ])
         ->find($order->id);
 

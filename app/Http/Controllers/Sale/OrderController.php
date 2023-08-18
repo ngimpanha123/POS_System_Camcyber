@@ -24,7 +24,8 @@ class OrderController extends Controller
         $data = Order::select('*')
             ->with([
                 'cashier',
-                'details'
+                'details',
+                'status'
             ]);
 
         // ==============================>> Date Range

@@ -38,7 +38,7 @@ class FileUpload
 
         $response = curl_exec($curl);
         if (curl_errno($curl)) {
-            return   ['url' => ''];
+            return   ['url' => ""];
             //$error_msg = curl_error($curl);
         }
         curl_close($curl);

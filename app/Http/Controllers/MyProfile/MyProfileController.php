@@ -42,27 +42,32 @@ class MyProfileController extends Controller
         //========================================================>>>> Start to update user
         $user = User::findOrFail($user_id);
         if ($user) {
-            $user->name = $req->name;
-            $user->phone = $req->phone;
-            $user->email = $req->email;
-            $user->updated_at = Carbon::now()->format('Y-m-d H:i:s');
+
+            $user->name         = $req->name;
+            $user->phone        = $req->phone;
+            $user->email        = $req->email;
+            $user->updated_at   = Carbon::now()->format('Y-m-d H:i:s');
 
             //Start to upload image 
-            $image    = FileUpload::uploadFile($req->image, 'my-profiles', $req->fileName);
-            if ($image) {
-                if (isset($image['url'])) {
-                    if ($image['url'] != '') {
-                        $user->avatar          = $image['url'];
-                    }
-                }
+            $image  = FileUpload::uploadFile($req->image, 'my-profile/', $req->fileName);
+            if ($image['url']) {
+                $user->avatar          = $image['url'];
             }
+
+
             $user->save();
 
             return response()->json([
                 'status'    => 'ជោគជ័យ',
                 'message'   => '* ព័ត៌មានផ្ទាល់ខ្លួនរបស់អ្នកត្រូវបានកែប្រែ *',
-                'data'      => $user
+                'data'      => [
+                        'name'  => $user->name,
+                        'phone' => $user->phone,
+                        'email' => $user->email,
+                        'avatar' => $user->avatar,
+                ]
             ], Response::HTTP_OK);
+
         }else{
             return response()->json([
                 'status' => 'error',

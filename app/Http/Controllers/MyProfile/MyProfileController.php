@@ -90,7 +90,7 @@ class MyProfileController extends Controller
             [
                 'old_password'      => 'required|min:6|max:20',
                 'new_password'      => 'required|min:6|max:20',
-                'confirm_password'  => 'required|min:6|max:20',
+                'confirm_password'  => 'required|min:6|max:20|same:new_password',
             ],
             [
                 'old_password.required'     => 'សូមបញ្ចូលពាក្យសម្ងាត់',
@@ -101,7 +101,7 @@ class MyProfileController extends Controller
                 'new_password.min'          => 'ពាក្យសម្ងាត់ថ្មី ត្រូវមាន៦ ខ្ទង់យ៉ាងតិច',
                 'new_password.max'          => 'ពាក្យសម្ងាត់ថ្មី ត្រូវមាន២០ ច្រើនបំផុត',
                 
-                'confirm_password'          => 'required|same:new_password'
+                'confirm_password.same'     => 'សូមបញ្ចាក់ថាពាក្យសម្ងាត់ថ្មី'
 
             ]
         );

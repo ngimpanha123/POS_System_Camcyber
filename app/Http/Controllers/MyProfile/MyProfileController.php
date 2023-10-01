@@ -13,16 +13,17 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class MyProfileController extends Controller
 {
-    public function get()
-    {
+    public function view(){
+
         $auth = JWTAuth::parseToken()->authenticate();
-        $admin = User::select('id', 'name', 'phone', 'email', 'avatar')->where('id', $auth->id)->first();
-        return response()->json($admin, Response::HTTP_OK);
+        $user = User::select('id', 'name', 'phone', 'email', 'avatar')->where('id', $auth->id)->first();
+        return response()->json($user, Response::HTTP_OK);
+        
     }
 
-    public function update(Request $req)
-    {
-        $user_id = JWTAuth::parseToken()->authenticate()->id;
+    public function update(Request $req){
+        
+        //========================================================>>>> Data Validation
         $this->validate(
             $req,
             [
@@ -30,31 +31,34 @@ class MyProfileController extends Controller
                 'phone' => 'required|min:9|max:10',
             ],
             [
-                'name.required' => 'សូមបញ្ចូលឈ្មោះ',
-                'name.max'      => 'ឈ្មោះមិនអាចលើសពី៦០',
-                'phone.required' => 'សូមបញ្ចូលលេខទូរស័ព្ទ',
-                'phone.min'     => 'សូមបញ្ចូលលេខទូរស័ព្ទយ៉ាងតិច៩ខ្ទង់',
-                'phone.max'     => 'លេខទូរស័ព្ទយ៉ាងច្រើនមិនលើសពី១០ខ្ទង់'
+                'name.required'     => 'សូមបញ្ចូលឈ្មោះ',
+                'name.max'          => 'ឈ្មោះមិនអាចលើសពី៦០',
+                'phone.required'    => 'សូមបញ្ចូលលេខទូរស័ព្ទ',
+                'phone.min'         => 'សូមបញ្ចូលលេខទូរស័ព្ទយ៉ាងតិច៩ខ្ទង់',
+                'phone.max'         => 'លេខទូរស័ព្ទយ៉ាងច្រើនមិនលើសពី១០ខ្ទង់'
 
             ]
         );
 
         //========================================================>>>> Start to update user
-        $user = User::findOrFail($user_id);
+        
+        $user = User::findOrFail(JWTAuth::parseToken()->authenticate()->id);
+
         if ($user) {
 
+            // Pair information
             $user->name         = $req->name;
             $user->phone        = $req->phone;
             $user->email        = $req->email;
             $user->updated_at   = Carbon::now()->format('Y-m-d H:i:s');
 
-            //Start to upload image 
+            // Upload Avatar File to File Service
             $image  = FileUpload::uploadFile($req->image, 'my-profile/', $req->fileName);
             if ($image['url']) {
                 $user->avatar          = $image['url'];
             }
 
-
+            // Save to DB
             $user->save();
 
             return response()->json([
@@ -69,46 +73,66 @@ class MyProfileController extends Controller
             ], Response::HTTP_OK);
 
         }else{
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'ទិន្នន័យរបស់អ្នកមិនត្រឹមត្រូវ'
             ], Response::HTTP_BAD_REQUEST);
+
         }
     }
-    public function changePassword(Request $req)
-    {
-        $old_password = $req->old_password;
-        $user_id = JWTAuth::parseToken()->authenticate()->id;
-        $current_password = User::find($user_id)->password;
 
-        if (Hash::check($old_password, $current_password)) {
+    public function changePassword(Request $req){
 
-            //==============================>> Check validation
-            $this->validate($req, [
-                'password'          => 'required|min:6|max:20',
-                'confirm_password'  => 'required|same:password'
-            ], [
-                'password.required'         => 'សូមបញ្ចូលលេខសម្ងាត់',
-                'password.min'              => 'សូមបញ្ចូលលេខសម្ងាត់ធំជាងឬស្មើ៦',
-                'password.max'              => 'សូមបញ្ចូលលេខសម្ងាត់តូចឬស្មើ២០',
-                'confirm_password.required' => 'សូមបញ្ចូលបញ្ជាក់ពាក្យសម្ងាត់',
-                'confirm_password.same'     => 'សូមបញ្ចូលបញ្ជាក់ពាក្យសម្ងាត់ឲ្យដូចលេខសម្ងាត់',
-            ]);
+        //========================================================>>>> Data Validation
+        $this->validate(
+            $req,
+            [
+                'old_password'      => 'required|min:6|max:20',
+                'new_password'      => 'required|min:6|max:20',
+                'confirm_password'  => 'required|min:6|max:20',
+            ],
+            [
+                'old_password.required'     => 'សូមបញ្ចូលពាក្យសម្ងាត់',
+                'old_password.min'          => 'ពាក្យសម្ងាត់ចាស់ ត្រូវមាន៦ ខ្ទង់យ៉ាងតិច',
+                'old_password.max'          => 'ពាក្យសម្ងាត់ចាស់ ត្រូវមាន២០ ច្រើនបំផុត',
 
-            //========================================================>>>> Start to update user
-            $user = User::findOrFail($user_id);
+                'new_password.required'     => 'សូមបញ្ចូលពាក្យសម្ងាត់ថ្មី',
+                'new_password.min'          => 'ពាក្យសម្ងាត់ថ្មី ត្រូវមាន៦ ខ្ទង់យ៉ាងតិច',
+                'new_password.max'          => 'ពាក្យសម្ងាត់ថ្មី ត្រូវមាន២០ ច្រើនបំផុត',
+                
+                'confirm_password'          => 'required|same:new_password'
+
+            ]
+        );
+
+        //========================================================>>>> Update user Info
+        $auth   = JWTAuth::parseToken()->authenticate();
+        $user   = User::findOrFail($auth->id);
+
+        if (Hash::check($req->old_password, $user->password)) { // Check comparision old & new password
+            
+            // Pair Passowrd Field
             $user->password = Hash::make($req->password);
+
+            // Save to DB
             $user->save();
 
+            // Make success response to client
             return response()->json([
-                'status' => 'success',
-                'message' => 'លេខសម្ងាត់របស់អ្នកត្រូវបានកែប្រែដោយជោគជ័យ'
+                'status'    => 'success',
+                'message'   => 'លេខសម្ងាត់របស់អ្នកត្រូវបានកែប្រែដោយជោគជ័យ'
             ], Response::HTTP_OK);
+
         } else {
+
+            // Make fail response to client
             return response()->json([
-                'status' => 'error',
-                'message' => 'ពាក្យសម្ងាត់ចាស់របស់អ្នកមិនត្រឹមត្រូវ'
+                'status'    => 'error',
+                'message'   => 'ពាក្យសម្ងាត់ចាស់របស់អ្នកមិនត្រឹមត្រូវ'
             ], Response::HTTP_BAD_REQUEST);
+
         }
     }
+
 }

@@ -41,9 +41,3 @@
         //============>> My Profile
         require(__DIR__ . '/api/myprofile.php');
     });
-
-    //============>> PrintPDF
-    Route::group(['prefix' => 'print'], function () {
-        require(__DIR__ . '/api/printpdf.php');
-    });
-

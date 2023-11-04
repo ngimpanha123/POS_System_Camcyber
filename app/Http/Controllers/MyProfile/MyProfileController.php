@@ -52,10 +52,25 @@ class MyProfileController extends Controller
             $user->email        = $req->email;
             $user->updated_at   = Carbon::now()->format('Y-m-d H:i:s');
 
-            // Upload Avatar File to File Service
-            $image  = FileUpload::uploadFile($req->image, 'my-profile/', $req->fileName);
-            if ($image['url']) {
-                $user->avatar          = $image['url'];
+             // avatar Upload
+             if ($req->avatar) {
+
+                // Need to create folder before storing avatars
+                //$folder = Carbon::today()->format('d') . '-' . Carbon::today()->format('M') . '-' . Carbon::today()->format('Y');
+                $folder = Carbon::today()->format('d-m-y');
+
+                //return $folder; 
+
+                $avatar  = FileUpload::uploadFile($req->avatar, 'my-profile/', $req->fileName);
+
+                //return $avatar; 
+
+                if ($avatar['url']) {
+
+                    $user->avatar     = $avatar['url'];
+                    $user->save();
+
+                }
             }
 
             // Save to DB

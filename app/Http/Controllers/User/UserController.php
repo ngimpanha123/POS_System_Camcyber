@@ -199,6 +199,28 @@ class UserController extends Controller
         $data = Type::get();
         return $data;
     }
+
+    public function block(Request $req, $id = 0)
+    {
+        //==============================>> Start Updating data
+        $user = User::select('id', 'name', 'phone', 'email', 'type_id', 'avatar', 'created_at', 'is_active')->with(['type'])->find($id);
+        if ($user) {
+
+            $user->is_active  =  !$user->is_active;
+            $user->save();
+
+            return response()->json([
+                'status'    => 'Success',
+                'message'   => 'User successfully modified',
+                'user'      => $user,
+            ], Response::HTTP_OK);
+        } else {
+            return response()->json([
+                'status'    => 'Fail',
+                'message'   => 'Invalid data',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
 }
 /*
 |--------------------------------------------------------------------------

@@ -21,7 +21,7 @@ class POSController extends Controller
             'products:id,name,image,type_id,unit_price'
         ])
         ->get();
-        
+
         return response()->json($data, Response::HTTP_OK);
     }
 
@@ -32,14 +32,14 @@ class POSController extends Controller
 
         //==============================>> Check validation
         $this->validate($req, [
-            'cart' => 'required|json',
+            'cart'      => 'required|json',
             'status_id' => 'required'
         ]);
 
         // ===>> Create Order
         $order                  = new Order;
         $order->cashier_id      = $user->id;
-        $order->status_id       = $req->status_id;
+        $order->status_id       = 1;
         $order->total_price     = 0;
         $order->receipt_number  = $this->generateReceiptNumber();
         $order->save();
@@ -49,7 +49,7 @@ class POSController extends Controller
         $totalPrice = 0;
         $cart       = json_decode($req->cart);
 
-        //return $cart; 
+        //return $cart;
 
         foreach ($cart as $productId => $qty) {
 
@@ -83,11 +83,11 @@ class POSController extends Controller
         ->with([
             'cashier:id,name,type_id',
             'cashier.type:id,name',
-            
-            'details:id,order_id,product_id,unit_price,qty,total_price_this_product', 
+
+            'details:id,order_id,product_id,unit_price,qty,total_price_this_product',
             'details.product:id,name,type_id',
             'details.product.type:id,name',
-            
+
             'status:id,name,color'
         ])
         ->find($order->id);

@@ -15,13 +15,6 @@ class OrderSeeder extends Seeder
      */
     public function run()
     {
-        // ============ Order Status ============ \\
-        DB::table('order_status')->insert([
-            ['name' => 'paid', 'color' => '#00FF00'], // Green color for 'paid' status
-            ['name' => 'pending', 'color' => '#FFFF00'], // Yellow color for 'pending' status
-            ['name' => 'cancelled', 'color' => '#FF0000'], // Red color for 'cancelled' status
-        ]);
-
         // ===>> Create Order Records
         $data = [];
         for ($i = 1; $i <= 1000; $i++) {
@@ -69,7 +62,7 @@ class OrderSeeder extends Seeder
             DB::table('order_details')->insert($details);
 
 
-            // ==>> Update table order for total price. 
+            // ==>> Update table order for total price.
             $order->total_price     = $totalPrice;
             $order->save();
         }

@@ -14,7 +14,7 @@
     */
 
 
-    
+
     //============>>  Auth
     Route::group(['prefix' => 'auth'], function () {
         require(__DIR__ . '/api/auth.php');
@@ -40,4 +40,9 @@
 
         //============>> My Profile
         require(__DIR__ . '/api/myprofile.php');
+
+        // ===========>> Print
+        Route::group(['prefix' => 'print'], function () {
+            require(__DIR__ . '/api/printpdf.php');
+        });
     });

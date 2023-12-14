@@ -39,6 +39,7 @@ class POSController extends Controller
         // ===>> Create Order
         $order                  = new Order;
         $order->cashier_id      = $user->id;
+        $order->status_id       = 1;
         $order->total_price     = 0;
         $order->receipt_number  = $this->generateReceiptNumber();
         $order->save();

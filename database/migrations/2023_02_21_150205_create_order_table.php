@@ -21,10 +21,13 @@ class CreateOrderTable extends Migration
 
             $table->integer('cashier_id')->index()->unsigned();
             $table->foreign('cashier_id')->references('id')->on('user')->onDelete('cascade');
-
+            
+            $table->integer('status_id')->index()->unsigned();
+            $table->foreign('status_id')->references('id')->on('order_status')->onDelete('cascade');
+            
             $table->double('total_price')->nullable();
             $table->decimal('discount', 10, 2)->default(0);
-
+            
             $table->decimal('total_received', 10, 2)->default(0);
             $table->dateTime('ordered_at')->nullable();
             $table->dateTime('paid_at')->nullable();

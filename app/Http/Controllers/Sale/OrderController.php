@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class SaleController extends Controller
+class OrderController extends Controller
 {
     function isValidDate($date)
     {
@@ -24,7 +24,8 @@ class SaleController extends Controller
         $data = Order::select('*')
             ->with([
                 'cashier',
-                'details'
+                'details',
+                'status'
             ]);
 
         // ==============================>> Date Range
@@ -35,6 +36,11 @@ class SaleController extends Controller
         // =========================== Search receipt number
         if ($req->receipt_number && $req->receipt_number != "") {
             $data = $data->where('receipt_number', $req->receipt_number);
+        }
+
+        // ========================== search filter status
+        if ($req->status_id) {
+            $data = $data->where('status_id', $req->status_id);
         }
 
         // ========================== search filter status
@@ -52,7 +58,6 @@ class SaleController extends Controller
             ->paginate($req->limit ? $req->limit : 10);
         return response()->json($data, Response::HTTP_OK);
     }
-
     public function delete($id = 0)
     {
         $data = Order::find($id);

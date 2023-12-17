@@ -13,7 +13,7 @@ class TelegramOrderController extends Controller
         $prodcutList = '';
         $totalProduct = 0;
         foreach ($order->details as $detail){
-            $prodcutList .=$detail->product->name. '    | ' .$detail->unit_price . '    |' .$detail->qty. '     | ' .$detail->total_price_this_product. PHP_EOL;
+            $prodcutList .=$detail->product->name. '    | ' .$detail->unit_price . '    |' .$detail->qty. '     | ' . PHP_EOL;
             $totalProduct += $detail->qty;
         }
         if($order){

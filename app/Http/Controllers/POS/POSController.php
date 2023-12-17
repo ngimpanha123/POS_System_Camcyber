@@ -53,14 +53,11 @@ class POSController extends Controller
 
             $product = Product::find($productId);
             if ($product) {
-                $total_price_this_product = 0;
-                $total_price_this_product =$qty * $product->unit_price;
                 $details[] = [
                     'order_id'      => $order->id,
                     'product_id'    => $productId,
                     'qty'           => $qty,
                     'unit_price'    => $product->unit_price,
-                    'total_price_this_product' => $total_price_this_product
                 ];
 
                 $totalPrice +=  $qty * $product->unit_price;
@@ -81,12 +78,9 @@ class POSController extends Controller
         ->with([
             'cashier:id,name,type_id',
             'cashier.type:id,name',
-
-            'details:id,order_id,product_id,unit_price,qty,total_price_this_product',
+            'details:id,order_id,product_id,unit_price,qty',
             'details.product:id,name,type_id',
-            'details.product.type:id,name',
-
-            'status:id,name,color'
+            'details.product.type:id,name'
         ])
         ->find($order->id);
 

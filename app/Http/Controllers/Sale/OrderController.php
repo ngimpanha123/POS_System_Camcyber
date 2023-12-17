@@ -39,11 +39,6 @@ class OrderController extends Controller
         }
 
         // ========================== search filter status
-        if ($req->status_id) {
-            $data = $data->where('status_id', $req->status_id);
-        }
-
-        // ========================== search filter status
         if ($req->receipt_number) {
             $data = $data->where('receipt_number', $req->receipt_number);
         }

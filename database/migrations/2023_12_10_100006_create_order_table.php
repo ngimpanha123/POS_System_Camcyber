@@ -25,9 +25,9 @@ class CreateOrderTable extends Migration
             $table->double('total_price')->nullable();
             $table->decimal('discount', 10, 2)->default(0);
 
-            $table->decimal('total_received', 10, 2)->default(0);
-            $table->dateTime('ordered_at')->nullable();
-            $table->dateTime('paid_at')->nullable();
+            // $table->decimal('total_received', 10, 2)->default(0);
+            // $table->dateTime('ordered_at')->nullable();
+            // $table->dateTime('paid_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -90,8 +90,19 @@ class UserSeeder extends Seeder
             ],
             [
                 'type_id'       => 2,
-                'email'         => 'monyratanak@gmail.com',
-                'phone'         => '012265555',
+                'email'         => 'hychin247@gmail.com',
+                'phone'         => '0975063390',
+                'password'      => bcrypt('123456'),
+                'is_active'     => 1,
+                'name'          => 'Hy Chin',
+                'avatar'        => 'static/icon/user.png',
+                'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at'    =>  Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
+                'type_id'       => 2,
+                'email'         => 'hieklymonyratanak@gmail.com',
+                'phone'         => '0885439988',
                 'password'      => bcrypt('123456'),
                 'is_active'     => 1,
                 'name'          => 'Hiek Lymonyratanak',

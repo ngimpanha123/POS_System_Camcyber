@@ -88,6 +88,39 @@ class UserSeeder extends Seeder
                 'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at'    =>  Carbon::now()->format('Y-m-d H:i:s')
             ],
+            [
+                'type_id'       => 2,
+                'email'         => 'hychin247@gmail.com',
+                'phone'         => '0975063390',
+                'password'      => bcrypt('123456'),
+                'is_active'     => 1,
+                'name'          => 'Hy Chin',
+                'avatar'        => 'static/icon/user.png',
+                'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at'    =>  Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
+                'type_id'       => 2,
+                'email'         => 'hieklymonyratanak@gmail.com',
+                'phone'         => '0885439988',
+                'password'      => bcrypt('123456'),
+                'is_active'     => 1,
+                'name'          => 'Hiek Lymonyratanak',
+                'avatar'        => 'static/icon/user.png',
+                'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at'    =>  Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
+                'type_id'       => 2,
+                'email'         => 'chhit085@gmail.com',
+                'phone'         => '085720085',
+                'password'      => bcrypt('123456'),
+                'is_active'     => 1,
+                'name'          => 'Chharng Chhit',
+                'avatar'        => 'static/icon/user.png',
+                'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at'    =>  Carbon::now()->format('Y-m-d H:i:s')
+            ],
         ];
 
         /*

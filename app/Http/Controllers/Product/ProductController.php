@@ -38,11 +38,11 @@ class ProductController extends Controller
 
     public function view($id = 0)
     {
-        $data = Product::select('*')->find($id); 
+        $data = Product::select('*')->find($id);
         if($data){
 
             return response()->json($data, Response::HTTP_OK);
-            
+
         }else{
 
             return response()->json([
@@ -50,7 +50,7 @@ class ProductController extends Controller
                 'message'   => 'គ្មានទិន្ន័យ',
             ], Response::HTTP_BAD_REQUEST);
         }
-        
+
     }
 
     public function create(Request $req)
@@ -71,11 +71,11 @@ class ProductController extends Controller
                 'code.required'         => 'សូមបញ្ចូលឈ្មោះលេខកូដផលិតផល',
                 'code.max'              => 'សូមបញ្ចូលឈ្មោះលេខកូដផលិតផលមិនអាចលើសពី២០ខ្ទង់',
 
-                'unit_price.required'   => 'សូមបញ្ចូលតម្លៃរាយ', 
-                'unit_price.numeric'    => 'សូមបញ្ចូលតម្លៃរាយជាលេខ', 
+                'unit_price.required'   => 'សូមបញ្ចូលតម្លៃរាយ',
+                'unit_price.numeric'    => 'សូមបញ្ចូលតម្លៃរាយជាលេខ',
 
                 'type_id.exists'        => 'សូមជ្រើសរើសឈ្មោះផលិតផល អោយបានត្រឹមត្រូវ កុំបោកពេក'
-                
+
             ]
         );
 
@@ -87,12 +87,12 @@ class ProductController extends Controller
         $product->unit_price    =   $req->unit_price;
         $product->save();
 
-        //==============================>> Start Uploading Image to File Server   
+        //==============================>> Start Uploading Image to File Server
         if ($req->image) {
-            // Need to create folder before storing images       
+            // Need to create folder before storing images
             $folder = Carbon::today()->format('d') . '-' . Carbon::today()->format('M') . '-' . Carbon::today()->format('Y');
             $image  = FileUpload::uploadFile($req->image, 'products/' . $folder, $req->fileName);
-            
+
             //if ($image['url']) {
                 $product->image = $image['url'];
                 $product->save();
@@ -107,7 +107,7 @@ class ProductController extends Controller
 
     public function update(Request $req, $id = 0)
     {
-        // return "Yes"; 
+        // return "Yes";
         //==============================>> Check validation
         $this->validate(
             $req,
@@ -139,7 +139,7 @@ class ProductController extends Controller
             // Save to DB
             $product->save();
 
-            
+
             // Image Upload
             if ($req->image) {
 
@@ -147,11 +147,11 @@ class ProductController extends Controller
                 //$folder = Carbon::today()->format('d') . '-' . Carbon::today()->format('M') . '-' . Carbon::today()->format('Y');
                 $folder = Carbon::today()->format('d-m-y');
 
-                //return $folder; 
+                //return $folder;
 
                 $image  = FileUpload::uploadFile($req->image, 'products/', $req->fileName);
 
-                //return $image; 
+                //return $image;
 
                 if ($image['url']) {
 
@@ -180,7 +180,7 @@ class ProductController extends Controller
 
                 'status'    => 'បរាជ័យ',
                 'message'   => 'ទិន្នន័យមិនត្រឹមត្រូវ',
-                
+
             ], Response::HTTP_BAD_REQUEST);
 
         }

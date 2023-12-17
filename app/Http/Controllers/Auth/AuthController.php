@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-// ===================================================>> Third Party Library fuck 
+// ===================================================>> Third Party Library fuck
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -35,7 +35,7 @@ class AuthController extends Controller
         // ================================================>> Data Validation
         $this->validate($req,
             [
-                'username' => ['required'], 
+                'username' => ['required'],
                 'password' => 'required|min:6|max:20'
             ],
             [
@@ -70,7 +70,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'status'    => 'បរាជ័យ',
-                'message'   => 'មិនអាចបង្កើតនិមិត្តសញ្ញាទេ',
+                'message'   => 'Cannot Login',
                 'error'     => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
 
@@ -102,7 +102,7 @@ class AuthController extends Controller
             'user'          => $dataUser,
             'role'          => $role
         ], Response::HTTP_OK);
-        
+
     }
 
 
@@ -117,5 +117,5 @@ class AuthController extends Controller
         return response()->json(['message' => 'Successfully logged out'], 200);
     }
 
-   
+
 }

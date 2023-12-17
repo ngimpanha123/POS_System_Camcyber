@@ -29,12 +29,8 @@ class OrderSeeder extends Seeder
             $data[] = [
                 'receipt_number'    => $this->generateReceiptNumber(),
                 'cashier_id'        => rand(2, 5),
-                //'status_id'         => rand(1, 3),
                 'total_price'       => 0,
-                'discount'          => 0,
-                'total_received'    => 0,
-                // 'ordered_at'        => Date('Y-m-d H:i:s'),
-                // 'paid_at'           => Date('Y-m-d H:i:s')
+                'ordered_at'        => Date('Y-m-d H:i:s')
             ];
         }
 

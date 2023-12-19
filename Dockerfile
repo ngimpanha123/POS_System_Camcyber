@@ -14,10 +14,10 @@ RUN echo "file_uploads=On" >> /usr/local/etc/php/conf.d/docker-php-ext-file_uplo
 COPY .  /var/www
 RUN rm -f composer.lock
 RUN composer install
-RUN php artisan cache:clear 
+RUN php artisan cache:clear
 RUN php artisan config:clear
-RUN cp .env.example .env
-RUN php artisan key:generate 
+# RUN cp .env.example .env
+RUN php artisan key:generate
 RUN php artisan jwt:secret
 
 CMD php artisan --host=0.0.0.0 serve

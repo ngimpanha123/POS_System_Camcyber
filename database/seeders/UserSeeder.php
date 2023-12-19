@@ -132,6 +132,17 @@ class UserSeeder extends Seeder
                 'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at'    =>  Carbon::now()->format('Y-m-d H:i:s')
             ],
+            [
+                'type_id'       => 2,
+                'email'         => 'eangchheangkang@gmail.com',
+                'phone'         => '015875187',
+                'password'      => bcrypt('123456'),
+                'is_active'     => 1,
+                'name'          => 'KANG EANGCHHEANG',
+                'avatar'        => 'static/icon/user.png',
+                'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at'    =>  Carbon::now()->format('Y-m-d H:i:s')
+            ],
         ];
 
         /*

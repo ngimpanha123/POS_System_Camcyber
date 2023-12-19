@@ -145,11 +145,11 @@ class UserSeeder extends Seeder
             ],
             [
                 'type_id'       => 2,
-                'email'         => 'ekmoniroth19@gmail.com',
-                'phone'         => '078206219',
+                'email'         => 'titotom934@gmail.com',
+                'phone'         => '099326932',
                 'password'      => bcrypt('123456'),
                 'is_active'     => 1,
-                'name'          => 'KANG EANGCHHEANG',
+                'name'          => 'TOM TITO',
                 'avatar'        => 'static/icon/user.png',
                 'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at'    =>  Carbon::now()->format('Y-m-d H:i:s')

@@ -4,12 +4,8 @@ EXPOSE 8000
 
 WORKDIR /var/www
 
-RUN echo "max_file_uploads=800" >> /usr/local/etc/php/conf.d/docker-php-ext-max_file_uploads.ini
-RUN echo "post_max_size=500M" >> /usr/local/etc/php/conf.d/docker-php-ext-post_max_size.ini
-RUN echo "upload_max_filesize=500M" >> /usr/local/etc/php/conf.d/docker-php-ext-upload_max_filesize.ini
-RUN echo "memory_limit=512M" >> /usr/local/etc/php/conf.d/docker-php-ext-memory_limit.ini
-RUN echo "max_execution_time=600" >> /usr/local/etc/php/conf.d/docker-php-ext-max_execution_time.ini
-RUN echo "file_uploads=On" >> /usr/local/etc/php/conf.d/docker-php-ext-file_uploads.ini
+# Increase Upload Max File Size
+COPY ./custom.ini /usr/local/etc/php/conf.d/custom.ini
 
 COPY .  /var/www
 

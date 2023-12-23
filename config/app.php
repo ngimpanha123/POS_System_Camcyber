@@ -69,7 +69,7 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE','UTC'), //change timezone
+    'timezone' => env('APP_TIMEZONE', 'UTC'), //change timezone
 
     /*
     |--------------------------------------------------------------------------
@@ -201,7 +201,7 @@ return [
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
         // Telegram Bot
-        Telegram\Bot\Laravel\TelegramServiceProvider::class,
+        App\Providers\TelegramServiceProvider::class,
     ],
 
     /*
@@ -217,6 +217,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'Telegram' => App\Facades\Telegram::class,
     ])->toArray(),
 
 ];

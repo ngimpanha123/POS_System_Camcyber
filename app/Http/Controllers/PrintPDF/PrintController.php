@@ -12,12 +12,14 @@ class PrintController extends Controller
     private $JS_BASE_URL;
     private $JS_USERNAME;
     private $JS_PASSWORD;
+    private $JS_TEMPLATE;
 
     public function __construct()
     {
         $this->JS_BASE_URL   = env('JS_BASE_URL');
         $this->JS_USERNAME   = env('JS_USERNAME');
         $this->JS_PASSWORD   = env('JS_PASSWORD');
+        $this->JS_TEMPLATE   = env('JS_TEMPLATE');
     }
 
     public function printInvioceOrder($receipt_number = 0)
@@ -25,7 +27,7 @@ class PrintController extends Controller
         try {
             $body = [
                 "template" => [
-                    "name" => "/pos-invoice/pos-invoice-main", // name or path
+                    "name" => $this->JS_TEMPLATE, // name or path
                 ],
                 "data" => $this->getData($receipt_number),
             ];

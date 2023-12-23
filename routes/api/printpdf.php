@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\PrintPDF\printController;
+use App\Http\Controllers\PrintPDF\PrintController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/order-invoice/{receipt_number}',   [printController::class, 'printInvioceOrder']);
+Route::get('/order-invoice/{receipt_number}',   [PrintController::class, 'printInvioceOrder']);

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Order\Order;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class printController extends Controller
+class PrintController extends Controller
 {
 
         public function printInvioceOrder($receipt_number = 0)

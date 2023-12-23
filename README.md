@@ -1,5 +1,5 @@
 # One Stop File Service
-Welcome to the Simple API File Service! This service allows you to upload and manage files with basic authentication for added security.
+Welcome to the File Service!.
 ## How to Run the app
 To run the API File Service on your local machine, follow these steps:
 1. **Clone the Repository:**
@@ -24,7 +24,7 @@ APP_DEBUG   = true
 APP_URL     = http://localhost
 ```
 
-4. **Start the Server:**
+## Start the Server:
 ```bash
 npm php artisan serve --port=8001
 ```

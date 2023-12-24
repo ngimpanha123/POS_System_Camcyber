@@ -11,5 +11,6 @@ COPY .  /var/www
 
 RUN rm -f composer.lock
 RUN composer install
+RUN composer dump-autoload
 
 CMD php artisan --host=0.0.0.0 serve

@@ -10,7 +10,8 @@ use App\Models\Product\Type as ProductType;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use App\Facades\Telegram;
+use App\Facades\TelegramFacade;
+use Telegram;
 
 class POSController extends Controller
 {
@@ -109,7 +110,9 @@ class POSController extends Controller
         $htmlMessage .= $productList . "\n";
         $htmlMessage .= "<b>* សរុបទាំងអស់៖</b> $totalProducts ទំនិញ $order->total_price ៛\n";
         $htmlMessage .= "- កាលបរិច្ឆេទ: " . $order->ordered_at;
-        Telegram::sendMessage($chatId, $htmlMessage);
+        //=================================
+        $telegramService = app('telegram');
+        $telegramService->sendMessage($chatId, $htmlMessage);
 
         return response()->json([
             'order'         => $orderData,

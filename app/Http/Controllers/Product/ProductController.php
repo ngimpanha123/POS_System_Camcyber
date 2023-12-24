@@ -192,11 +192,13 @@ class ProductController extends Controller
 
         //==============================>> Start deleting data
         if ($data) {
+
             $data->delete();
             return response()->json([
                 'status'    => 'ជោគជ័យ',
                 'message'   => 'ទិន្នន័យត្រូវបានលុប',
             ], Response::HTTP_OK);
+
         } else {
             return response()->json([
                 'status'    => 'បរាជ័យ',

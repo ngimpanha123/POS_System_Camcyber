@@ -1,5 +1,8 @@
-FROM lorisleiva/laravel-docker:8.1
+FROM sovichea10/laravel-app-php:8.1-fpm-nginx
+
 EXPOSE 8000
+
+WORKDIR /var/www
 
 COPY .  /var/www
 

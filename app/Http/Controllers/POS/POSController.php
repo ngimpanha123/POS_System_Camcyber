@@ -18,24 +18,24 @@ class POSController extends Controller
     public function getProducts()
     {
         $data = ProductType::select('id', 'name')
-            ->with([
-                'products:id,name,image,type_id,unit_price'
-            ])
-            ->get();
+        ->with([
+            'products:id,name,image,type_id,unit_price'
+        ])
+        ->get();
 
         return response()->json($data, Response::HTTP_OK);
     }
 
     public function makeOrder(Request $req)
     {
-        $chatId = env('TELEGRAM_CHAT_ID');
-        //==============================>> Get Current Login User
-        $user = JWTAuth::parseToken()->authenticate();
 
         //==============================>> Check validation
         $this->validate($req, [
             'cart'      => 'required|json'
         ]);
+
+        //==============================>> Get Current Login User to save who make orders.
+        $user = JWTAuth::parseToken()->authenticate();
 
         // ===>> Create Order
         $order                  = new Order;
@@ -47,9 +47,7 @@ class POSController extends Controller
         // ===>> Find Total Price & Order Detail
         $details    = [];
         $totalPrice = 0;
-        $cart       = json_decode($req->cart);
-
-        //return $cart;
+        $cart       = json_decode($req->cart); // Turn Json String to PHP Array.
 
         foreach ($cart as $productId => $qty) {
 
@@ -66,14 +64,13 @@ class POSController extends Controller
             }
         }
 
-        // ===>> Save tot Details
+        // ===>> Save to Details
         Detail::insert($details);
 
         // ===>> Update Order
         $order->total_price     = $totalPrice;
         $order->ordered_at      = Date('Y-m-d H:i:s');
         $order->save();
-
 
         // ===> Get Data for Client Reponse to view the order in Popup.
         $orderData = Order::select('*')
@@ -86,7 +83,7 @@ class POSController extends Controller
             ])
             ->find($order->id);
 
-        // Send Notification
+        // Send Telegram Notification
         $htmlMessage = "<b>ការបញ្ជាទិញទទួលបានជោគជ័យ!</b>\n";
         $htmlMessage .= "- លេខវិកយប័ត្រ៖ " . $orderData->receipt_number . "\n";
         $htmlMessage .= "- អ្នកគិតលុយ៖ " . $orderData->cashier->name;
@@ -110,9 +107,11 @@ class POSController extends Controller
         $htmlMessage .= $productList . "\n";
         $htmlMessage .= "<b>* សរុបទាំងអស់៖</b> $totalProducts ទំនិញ $order->total_price ៛\n";
         $htmlMessage .= "- កាលបរិច្ឆេទ: " . $order->ordered_at;
+
+        $chatId = env('TELEGRAM_CHAT_ID');
         //=================================
-        $telegramService = app('telegram');
-        $telegramService->sendMessage($chatId, $htmlMessage);
+        // $telegramService = app('telegram');
+        // $telegramService->sendMessage($chatId, $htmlMessage);
 
         return response()->json([
             'order'         => $orderData,
@@ -127,6 +126,7 @@ class POSController extends Controller
         if ($check) {
             return $this->generateReceiptNumber();
         }
+
         return $number;
     }
 }

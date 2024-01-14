@@ -13,7 +13,10 @@
     |
     */
 
-
+    //============>>  Testing
+    Route::group(['prefix' => 'testing'], function () {
+        require(__DIR__ . '/api/testing.php');
+    });
 
     //============>>  Auth
     Route::group(['prefix' => 'auth'], function () {

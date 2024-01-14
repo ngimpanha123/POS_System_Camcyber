@@ -28,6 +28,7 @@ class POSController extends Controller
 
     public function makeOrder(Request $req)
     {
+        //return env('TELEGRAM_BOT_TOKEN');
 
         //==============================>> Check validation
         $this->validate($req, [
@@ -75,11 +76,14 @@ class POSController extends Controller
         // ===> Get Data for Client Reponse to view the order in Popup.
         $orderData = Order::select('*')
             ->with([
+
                 'cashier:id,name,type_id',
                 'cashier.type:id,name',
+
                 'details:id,order_id,product_id,unit_price,qty',
                 'details.product:id,name,type_id',
                 'details.product.type:id,name'
+
             ])
             ->find($order->id);
 
@@ -110,8 +114,8 @@ class POSController extends Controller
 
         $chatId = env('TELEGRAM_CHAT_ID');
         //=================================
-        // $telegramService = app('telegram');
-        // $telegramService->sendMessage($chatId, $htmlMessage);
+        $telegramService = app('telegram');
+        $telegramService->sendMessage($chatId, $htmlMessage);
 
         return response()->json([
             'order'         => $orderData,

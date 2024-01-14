@@ -20,6 +20,12 @@ class Order extends Model
         ->select('id', 'name');
     }
 
+    public function user() // M:1
+    {
+        return $this->belongsTo(User::class, 'cashier_id')
+        ->select('id', 'name');
+    }
+
     public function details()// 1:M
     {
         return $this->hasMany(Detail::class, 'order_id')

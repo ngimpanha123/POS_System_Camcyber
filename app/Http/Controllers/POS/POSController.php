@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Facades\TelegramFacade;
+use App\Services\TelegramService;
 use Telegram;
 
 class POSController extends Controller
@@ -18,10 +19,10 @@ class POSController extends Controller
     public function getProducts()
     {
         $data = ProductType::select('id', 'name')
-        ->with([
-            'products:id,name,image,type_id,unit_price'
-        ])
-        ->get();
+            ->with([
+                'products:id,name,image,type_id,unit_price'
+            ])
+            ->get();
 
         return response()->json($data, Response::HTTP_OK);
     }
@@ -108,10 +109,8 @@ class POSController extends Controller
         $htmlMessage .= "<b>* សរុបទាំងអស់៖</b> $totalProducts ទំនិញ $order->total_price ៛\n";
         $htmlMessage .= "- កាលបរិច្ឆេទ: " . $order->ordered_at;
 
-        $chatId = env('TELEGRAM_CHAT_ID');
         //=================================
-        // $telegramService = app('telegram');
-        // $telegramService->sendMessage($chatId, $htmlMessage);
+        TelegramService::sendMessage($htmlMessage);
 
         return response()->json([
             'order'         => $orderData,

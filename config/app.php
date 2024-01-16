@@ -198,10 +198,7 @@ return [
         /**
          * Add JWTAuth for Auth
          */
-        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-
-        // Telegram Bot
-        App\Providers\TelegramServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class
     ],
 
     /*

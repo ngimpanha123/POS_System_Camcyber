@@ -11,7 +11,7 @@ class TelegramService
         $bot_token  = env('TELEGRAM_BOT_TOKEN');
         $chat_id    = env('TELEGRAM_CHAT_ID');
         try {
-            return Http::get("https://api.telegram.org/bot$bot_token/sendMessage?chat_id=$chat_id&text=$msg&parse_mode=html");
+            return Http::withOptions(['verify' => false])->get("https://api.telegram.org/bot$bot_token/sendMessage?chat_id=$chat_id&text=$msg&parse_mode=html");
         } catch (\Exception $e) {
             return $e->getMessage();
         }

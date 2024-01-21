@@ -2,23 +2,18 @@
 
 namespace App\Services;
 
-use Telegram\Bot\Api;
+use Illuminate\Support\Facades\Http;
 
 class TelegramService
 {
-    protected $telegram;
-
-    public function __construct(Api $telegram)
+    public static function sendMessage($msg)
     {
-        $this->telegram = $telegram;
-    }
-
-    public function sendMessage($chatId, $message, $parseMode = 'HTML')
-    {
-        return $this->telegram->sendMessage([
-            'chat_id' => $chatId,
-            'text' => $message,
-            'parse_mode' => $parseMode,
-        ]);
+        $bot_token  = env('TELEGRAM_BOT_TOKEN');
+        $chat_id    = env('TELEGRAM_CHAT_ID');
+        try {
+            return Http::withOptions(['verify' => false])->get("https://api.telegram.org/bot$bot_token/sendMessage?chat_id=$chat_id&text=$msg&parse_mode=html");
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 }

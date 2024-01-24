@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <title>Reset Password</title>
-</head>
-
 <body>
     <h1>Dear User, </h1>
     <p>We received a request to reset your password for your account with POS CamCyber System. To verify your identity and reset your password, please use the following One-Time Password (OTP):</p>

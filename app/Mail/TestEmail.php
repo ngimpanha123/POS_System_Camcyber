@@ -19,6 +19,6 @@ class TestEmail extends Mailable
 
     public function build()
     {
-        return $this->subject('Password Reset OTP')->view('testEmail');
+        return $this->subject('Reset Password')->view('testEmail');
     }
 }

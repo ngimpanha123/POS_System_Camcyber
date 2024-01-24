@@ -47,4 +47,5 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 });
 
 //Test Implement Send Email
-Route::post('/send-email', [EmailController::class, 'sendEmail']);
+// Route::post('/send-email', [EmailController::class, 'sendEmail']);
+Route::post('/send-email', [EmailController::class, 'sendEmailRaw']);

@@ -16,7 +16,7 @@ use App\Http\Controllers\MainController;
 // Model
 use App\Models\Order\Order;
 
-class SaleController extends Controller
+class SaleController extends MainController
 {
     function isValidDate($date)
     {

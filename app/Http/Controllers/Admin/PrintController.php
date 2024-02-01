@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Http;
 
 // ============================================================================>> Custom Library
 // Controller
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\MainController;
 
 // Model
 use App\Models\Order\Order;

@@ -126,7 +126,7 @@ class POSController extends MainController
         $productList = '';
         $totalProducts = 0;
 
-        foreach ($order->details as $detail) {
+        foreach ($orderData->details as $detail) {
             $productList .= sprintf(
                 "%-20s | %-15s | %-10s | %s\n",
                 $detail->product->name,
@@ -140,8 +140,8 @@ class POSController extends MainController
         $htmlMessage .= "\n---------------------------------------\n";
         $htmlMessage .= "ផលិតផល             | តម្លៃដើម(៛)     | បរិមាណ\n";
         $htmlMessage .= $productList . "\n";
-        $htmlMessage .= "<b>* សរុបទាំងអស់៖</b> $totalProducts ទំនិញ $order->total_price ៛\n";
-        $htmlMessage .= "- កាលបរិច្ឆេទ: " . $order->ordered_at;
+        $htmlMessage .= "<b>* សរុបទាំងអស់៖</b> $totalProducts ទំនិញ $orderData->total_price ៛\n";
+        $htmlMessage .= "- កាលបរិច្ឆេទ: " . $orderData->ordered_at;
 
         //=================================
         TelegramService::sendMessage($htmlMessage);

@@ -14,19 +14,26 @@ use Illuminate\Support\Facades\Route;
     |
     */
 
-    //============>>  Authenication
+    // ==============================================>>  Login
     Route::group(['prefix' => 'auth'], function () {
         require(__DIR__ . '/api/auth.php');
     });
 
-    Route::group(['prefix' => 'admin'], function () {
-        require(__DIR__ . '/api/admin.php');
+    // ==============================================>>  Protected routes from Unauthorized Access
+    Route::group(['middleware' => ['jwt.verify']], function () {
+
+        Route::group(['prefix' => 'admin'], function () {
+            require(__DIR__ . '/api/admin.php');
+        });
+
+        Route::group(['prefix' => 'profile'], function () {
+            require(__DIR__ . '/api/profile.php');
+        });
+
     });
 
-    Route::group(['prefix' => 'profile'], function () {
-        require(__DIR__ . '/api/profile.php');
-    });
 
+     // ==============================================>>  Test with Third Party via API
     Route::group(['prefix' => 'test'], function () {
         require(__DIR__ . '/api/test.php');
     });

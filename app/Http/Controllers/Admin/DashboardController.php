@@ -10,17 +10,15 @@ use Illuminate\Http\Response; // For Responsing data back to Client
 use App\Http\Controllers\MainController;
 
 // Model
-use App\Models\Order\Order;
+
 
 class DashboardController extends MainController
 {
     public function getDashboardInfo()
     {
-        $totalSaleToday = Order::sum('total_price');
+        $totalSaleToday = 0;
 
-        $data = [
-            'total_sale_today' => $totalSaleToday
-        ];
+
         return response()->json($data, Response::HTTP_OK);
     }
 }

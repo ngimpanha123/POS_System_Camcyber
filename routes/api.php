@@ -14,13 +14,10 @@ use Illuminate\Support\Facades\Route;
     |
     */
 
-//============>>  Auth
-Route::group(['prefix' => 'auth'], function () {
-    require(__DIR__ . '/api/auth.php');
-});
-
-//============>>  Authenticated
-Route::group(['middleware' => ['jwt.verify']], function () {
+    //============>>  Testing
+    Route::group(['prefix' => 'testing'], function () {
+        require(__DIR__ . '/api/testing.php');
+    });
 
     //============>>  Dashboard
     require(__DIR__ . '/api/dashboard.php');

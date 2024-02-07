@@ -22,8 +22,7 @@ class UserSeeder extends Seeder
         */
         DB::table('users_type')->insert(
             [
-                ['name' => 'Admin'],
-                ['name' => 'Staff'],
+                ['name' => 'Admin']
             ]
         );
         /*

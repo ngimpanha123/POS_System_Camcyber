@@ -16,9 +16,16 @@ class DashboardController extends MainController
 {
     public function getDashboardInfo()
     {
-        $totalSaleToday = 0;
+       //Get order data from db and sum total_price using funtion sum
+       $totalSaleToday = Order::sum('total_price');
+       //Prepare respone
+       $data =[
+           'total_sale_today'  => $totalSaleToday,
+       ];
 
 
-        return response()->json($data, Response::HTTP_OK);
+       // respone to client
+       return response()->json($data, Response::HTTP_OK);
+
     }
 }

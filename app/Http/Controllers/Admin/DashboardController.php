@@ -11,6 +11,9 @@ use App\Http\Controllers\MainController;
 
 // Model
 
+use App\Models\Order\Order;
+
+
 
 class DashboardController extends MainController
 {

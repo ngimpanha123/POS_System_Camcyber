@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+// ============================================================================>> Core Library
+use Illuminate\Http\Request; // For Getting requested Payload from Client
 use Illuminate\Http\Response; // For Responsing data back to Client
 
 // ============================================================================>> Third Library
@@ -23,9 +23,8 @@ use App\Models\Order\Order;
 use App\Models\Order\Detail as OrderDetail; // Rename
 
 
-class POSController extends Controller
+class POSController extends MainController
 {
-    //
     public function getProducts(){
 
         // ===>> Get Data from DB (group by Product type from DB)
@@ -172,5 +171,4 @@ class POSController extends Controller
         TelegramService::sendMessage($htmlMessage);
 
     }
-    
 }

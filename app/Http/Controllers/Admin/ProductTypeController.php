@@ -2,19 +2,43 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+//=============================================================================>> Core Library
+use Illuminate\Http\Request;            // for getting Payload form client
+use Illuminate\Http\Response;           // for returning data back to client
+
 //=============================================================================>> Third Party Library
 
 //=============================================================================>> Custom Library
 use App\Http\Controllers\MainController;
 use App\Models\Product\Type;           // for getting Type data form database
 
-
-class ProductTypeController extends Controller
+class ProductTypeController extends MainController
 {
-    //
+    public function getData(Request $req)
+    {
+        // តាង data ជាទិន្នន័យដែលត្រូវរក
+        $data = Type::select("id", 'name', 'created_at', 'updated_at')
+        // ->with([
+        //     'products:id,Type_id,name,image'
+        // ])
+        ->withCount([
+            'products as n_of_products'
+        ]);
+
+        // ===>> Filter data
+        if ($req->key && $req->key != ''){
+            $data = $data->where('name', 'LIKE', '%'.$req->key.'%'); //search by key
+        }
+
+        // ===>> Get data from DB
+        $data = $data->orderBy('id', 'DESC')
+        ->get();
+      
+        // ===>> Return data to client
+        return $data;
+    }
+
+     
     public function create(Request $req)
     {
         // ===>> Check validation
@@ -100,7 +124,4 @@ class ProductTypeController extends Controller
 
         }
     }
-
-
-
 }

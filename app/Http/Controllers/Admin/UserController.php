@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
+// ============================================================================>> Core Library
+use Illuminate\Http\Request; // For Getting requested Payload from Client
 use Illuminate\Http\Response; // For Responsing data back to Client
 use Illuminate\Support\Facades\Hash; // For Encripting data
 
@@ -22,10 +21,8 @@ use App\Services\FileUpload; // Upload Image/File to File Micro Serivce
 use App\Models\User\Type;
 use App\Models\User\User;
 
-
-class UserController extends Controller
+class UserController extends MainController
 {
-    //
     public function getUserType(){
 
         // ===>> Get Data from Database
@@ -39,7 +36,7 @@ class UserController extends Controller
     public function getData(Request $req){
 
         // ===>> Get Data from DB
-        $data = User::select('id', 'name', 'phone', 'email', 'type_id', 'avatar', 'created_at', 'is_active')
+        $data = User::select('id', 'name', 'phone', 'email', 'type_id', 'avatar', 'created_at', 'updated_at', 'is_active')
         ->with([
             'type' // M:1
         ]);
@@ -155,9 +152,11 @@ class UserController extends Controller
                 'phone.required'    => 'សូមវាយបញ្ចូលលេខទូរស័ព្ទរបស់អ្នក',
             ]
         );
-
+        
+            
         // Unique Phone Number Validation
         $check  = User::where('id','!=',$id)->where('phone',$req->phone)->first();
+       
         if($check){ // Yes
 
             // ===> Failed Response Back to Client
@@ -169,7 +168,8 @@ class UserController extends Controller
         }
 
          // Unique Email Validation
-        $check  = User::where('id','!=',$id)->where('email',$req->email)->first();
+        $check  = User::where('id','!=',$id)->where('email',$req->email)->first(); 
+   
         if($check){ // Yes
 
             // ===> Failed Response Back to Client
@@ -183,15 +183,39 @@ class UserController extends Controller
         //==============================>> Start Updating data
         // Get Data from DB
         $user = User::select('id', 'name', 'phone', 'email', 'type_id', 'avatar', 'created_at', 'is_active')->with(['type'])->find($id);
+       
         if ($user) { // Yes
-
+            
             // Mapping between database table field and requested data from client
-            $user->name      =   $req->name;
-            $user->type_id   =   $req->type_id;
-            $user->phone     =   $req->phone;
-            $user->email     =   $req->email;
-            $user->is_active =   $req->is_active;
+            // $user->name      =   $req->name;
+            // $user->type_id   =   $req->type_id;
+            // $user->phone     =   $req->phone;
+            // $user->email     =   $req->email;
+            // $user->is_active =   $req->is_active;
 
+            if ($user) { // If user is found
+                // Mapping between database table field and requested data from client
+                if ($req->has('name')) {
+                    $user->name = $req->name;
+                }
+                if ($req->has('type_id')) {
+                    $user->type_id = $req->type_id;
+                }
+                if ($req->has('phone')) {
+                    $user->phone = $req->phone;
+                }
+                if ($req->has('email')) {
+                    $user->email = $req->email;
+                }
+                if ($req->has('is_active')) {
+                    $user->is_active = $req->is_active;
+                }
+            
+                // Save the updated user
+                
+            }
+
+          
             // Call to File Service
             if ($req->image) {
 
@@ -257,7 +281,7 @@ class UserController extends Controller
     }
 
     public function changePassword(Request $req, $id = 0){
-
+       
         // ===>> Check validation
         $this->validate($req, [
             'password' => 'required|min:6|max:20',
@@ -270,7 +294,8 @@ class UserController extends Controller
             'confirm_password.same'     => 'សូមបញ្ចូលបញ្ជាក់ពាក្យសម្ងាត់ឲ្យដូចលេខសម្ងាត់',
 
         ]);
-
+        
+        //return $req;
         // ===>> Get User from DB
         $user = User::find($id);
 
@@ -318,7 +343,7 @@ class UserController extends Controller
             // ===>> Success Response Back to Client
             return response()->json([
                 'status'    => 'Success',
-                'message'   => 'User successfully modified',
+                'message'   => 'User successfully modified or blocked!',
                 'user'      => $user,
             ], Response::HTTP_OK);
 
@@ -332,5 +357,15 @@ class UserController extends Controller
 
         }
     }
-
 }
+
+/*
+|--------------------------------------------------------------------------
+| Develop by: Yim Klok
+|--------------------------------------------------------------------------
+|
+| date: 23/02/2023.
+| location: Manistry of Public Works and Transport - MPWT
+| By: CamCyber Digital Tech Team
+|
+*/

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+// ====>> Core Library
+use Illuminate\Http\Request; // For Getting requested Payload from Client
 use Illuminate\Http\Response; // For Responsing data back to Client
-
+use Illuminate\Suppport\Collection;
+use Illuminate\Pagination\Paginator;
 // ====>> Third Party Library
 use Tymon\JWTAuth\Facades\JWTAuth; // Get Current Logged User
 
@@ -16,10 +17,8 @@ use App\Http\Controllers\MainController;
 // Model
 use App\Models\Order\Order;
 
-
-class SaleController extends Controller
+class SaleController extends MainController
 {
-    //
     private function _isValidDate($date){
 
         if (false === strtotime($date)) {
@@ -29,40 +28,49 @@ class SaleController extends Controller
         }
 
     }
-
+//
     public function getData(Request $req){
-
+        //if using postman to test this function, there are only data of first page 
+        //To get all data, plz add get method after selecting tables and comment orderBy and paginate 
+        //The reason is that calling get() retrieves the results and returns a collection, not  a query builder instance. So that it cannot be paginated.
+        
         // ===>> Get Data from DB
         $data = Order::select('*')
         ->with([
             'cashier', // M:1
             'details' // 1:M
         ]);
+    //    $data = Order::with(['cashier', 'details'])
+    //     ->orderBy('id', 'desc')->paginate($req->limit ? $req->limit : 10);
+    //    // ->get();
 
         // =======================>>>>>>>> Filter Data <<<<<<<<<<< ====================================
         // ===>> Date Range
-        if ($req->from && $req->to && $this->_isValidDate($req->from) && $this->_isValidDate($req->to)) {
+        if ($req != "" && $req->from && $req->to && $this->_isValidDate($req->from) && $this->_isValidDate($req->to)) {
             $data = $data->whereBetween('created_at', [$req->from . " 00:00:00", $req->to . " 23:59:59"]);
+            //return $data-> created_at;
         }
-
+        
         // ===>> Search receipt number
-        if ($req->receipt_number && $req->receipt_number != "") { // Unless receip_number requested from client is sent and having value
+        if ($req != "" && $req->receipt_number && $req->receipt_number != "") { // Unless receip_number requested from client is sent and having value
             $data = $data->where('receipt_number', $req->receipt_number);
         }
-
+        
         // ==>> search filter status
         if ($req->receipt_number) {
             $data = $data->where('receipt_number', $req->receipt_number);
         }
-
+        
         // ===>> If Not admin, get only record that this user make order
         $user = JWTAuth::parseToken()->authenticate();
-        if ($user->type_id == 2) { //Manager
+        
+        if ($user->type_id == 1) { //Manager
             $data = $data->where('cashier_id', $user->id);
         }
-
-        $data = $data->orderBy('id', 'desc')
-        ->paginate($req->limit ? $req->limit : 10);
+        //return $data;
+        //$data = $data->sortBy('id', 'desc');
+    //    return $data;
+        $data = $data->orderBy('total_price','desc')->paginate($req->limit ? $req->limit : 10);
 
         // ===>> Success Response Back to Client
         return response()->json($data, Response::HTTP_OK);

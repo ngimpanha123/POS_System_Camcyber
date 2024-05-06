@@ -1,16 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\MainController;
 use App\Models\Order\Order;
 use Illuminate\Database\QueryException;
 
-
-class PrintController extends Controller
+class PrintController extends MainController
 {
     private $JS_BASE_URL;
     private $JS_USERNAME;
@@ -34,7 +30,7 @@ class PrintController extends Controller
             $url = $this->JS_BASE_URL."/api/report";
             // Debugging: Log the constructed URL
             info("Constructed URL: $url");
-
+            
             // Get Data from DB
             $receipt = Order::select('id', 'receipt_number', 'cashier_id', 'total_price', 'ordered_at')
                 ->with([
@@ -42,24 +38,25 @@ class PrintController extends Controller
                     'details' // 1:M
                 ])
                 ->where('receipt_number', $receiptNumber)
-                ->orderBy('id', 'desc')
-                ->get();
+                // ->orderBy('id', 'desc')
+                ->first();
 
             // Find Total Price
-            $totalPrice = 0;
-            foreach ($receipt as $row) {
-                $totalPrice += $row->total_price;
-            }
+            // $totalPrice = 0;
+            // foreach ($receipt as $row) {
+            //     $totalPrice += $row->total_price;
+            // }
 
             // Prepare Payload for JS Report Service
             $payload = [
                 "template" => [
                     "name" => $this->JS_TEMPLATE,
                 ],
-                "data" => [
-                    'total' => $totalPrice,
-                    'data'  => $receipt,
-                ],
+                // "data" => [
+                //     'total' => $totalPrice,
+                //     'data'  => $receipt,
+                // ],
+                "data" => $receipt,
             ];
 
             // Send Request to JS Report Service

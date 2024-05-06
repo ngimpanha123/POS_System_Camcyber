@@ -22,7 +22,13 @@ use Illuminate\Support\Facades\Route;
     // ==============================================>>  Protected routes from Unauthorized Access
     Route::group(['middleware' => ['jwt.verify']], function () {
 
-        // Add ur code here
+        Route::group(['prefix' => 'admin'], function () {
+            require(__DIR__ . '/api/admin.php');
+        });
+
+        Route::group(['prefix' => 'profile'], function () {
+            require(__DIR__ . '/api/profile.php');
+        });
 
     });
 
@@ -31,3 +37,4 @@ use Illuminate\Support\Facades\Route;
     Route::group(['prefix' => 'test'], function () {
         require(__DIR__ . '/api/test.php');
     });
+

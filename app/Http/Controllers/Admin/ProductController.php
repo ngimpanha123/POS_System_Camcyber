@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+// ============================================================================>> Core Library
+use Illuminate\Http\Request; // For Getting requested Payload from Client
+use Illuminate\Http\Response; // For Responsing data back to Client
+use Illuminate\Pagination\Paginator;
+
 
 // ============================================================================>> Third Party Library កខគឃង
 use Carbon\Carbon; // Data Time format & Calculation
@@ -18,75 +21,111 @@ use App\Services\FileUpload; // Upload Image/File to File Micro Serivce
 // Model
 use App\Models\Product\Product;
 
-
-class ProductController extends Controller
+class ProductController extends MainController
 {
-    //
-    public function getData(Request $request){
+    public function getData(Request $req){
+        //if using postman to test this function, there are only data of first page 
+        //To get all data, plz add get method after selecting tables and comment orderBy and paginate 
+        //The reason is that calling get() retrieves the results and returns a collection, not  a query builder instance. So that it cannot be paginated.
         
-        //declare variable
-        $data = Product::select('*')->with(['type']);
+        // return $req;
+        // Declar Variable
+        $data = Product::select('*')
+        ->with(['type'])
+        ;
+      //  return $data;
 
-        if($request->key && $request->Key != ''){
+        // ===>> Filter Data
+        // By Key compared with Code or Name
+        if ($req->key && $req->key != '') {
 
-            $data = $data->where('code', 'LIKE', '%' . $request->Key . '%')->OrWhere('name', 'LIKE', '%' . $request->Key .'%');
+            $data = $data->where('code', 'LIKE', '%' . $req->key . '%')
+            ->Orwhere('name', 'LIKE', '%' . $req->key . '%');
+        }
+
+        // By Product Type
+        if ($req->type && $req->type != 0) {
+
+            $data = $data->where('type_id', $req->type);
 
         }
 
-        if($request->type && $request->type != 0){
+        $data = $data->orderBy('id', 'desc') // Order Data by Giggest ID to small
+        ->paginate($req->limit ? $req->limit : 10,'per_page'); // Paginate Data
 
-            $data = $data->where('type_id', $request->type);
-        }
-
-        $data = $data->orderBy('id','desc')->paginate($request->limit ? $request->limit :10,'per_page');
-
-        return response()->json($data,Response::HTTP_OK);
+        // ===> Success Response Back to Client
+        return response()->json($data, Response::HTTP_OK);
 
     }
 
-    public function createData(Request $request){
+    public function view($id = 0){
 
-        //check validation
+        // Find record from DB
+        $data = Product::select('*')->find($id);
+
+        // ===>> Check if data is valide
+        if ($data) { // Yes
+
+            // ===> Success Response Back to Client
+            return response()->json($data, Response::HTTP_OK);
+
+        } else { // No
+
+            // ===> Failed Response Back to Client
+            return response()->json([
+                'status'    => 'បរាជ័យ',
+                'message'   => 'ទិន្នន័យមិនត្រឹមត្រូវ',
+            ], Response::HTTP_BAD_REQUEST);
+
+        }
+
+    }
+
+    public function create(Request $req){
+
+        // ===>> Check validation
         $this->validate(
-            $request,
+            $req,
             [
                 'name'              => 'required|max:50',
                 'code'              => 'required|max:20',
                 'unit_price'        => 'required|numeric',
                 'type_id'           => 'required|exists:products_type,id'
             ],
-
             [
-                'name.required'       =>'សូមបញ្ចូលឈ្មោះផលិតផល',
-                'name.max'            => 'ឈ្មោះផលិតផលមិនអាចលើសពី៥០ខ្ទង់',
+                'name.required'         => 'សូមបញ្ចូលឈ្មោះផលិតផល',
+                'name.max'              => 'ឈ្មោះផលិតផលមិនអាចលើសពី50ខ្ទង់',
 
-                'code.required'       => 'សូមបញ្ចូលឈ្មោះលេខកូដផលិតផល',
+                'code.required'         => 'សូមបញ្ចូលឈ្មោះលេខកូដផលិតផល',
                 'code.max'              => 'សូមបញ្ចូលឈ្មោះលេខកូដផលិតផលមិនអាចលើសពី២០ខ្ទង់',
 
                 'unit_price.required'   => 'សូមបញ្ចូលតម្លៃរាយ',
                 'unit_price.numeric'    => 'សូមបញ្ចូលតម្លៃរាយជាលេខ',
 
                 'type_id.exists'        => 'សូមជ្រើសរើសឈ្មោះផលិតផល អោយបានត្រឹមត្រូវ កុំបោកពេក'
-            ],
 
+            ]
         );
-        $product                =   new Product;
-        $product->name          =   $request->name;
-        $product->code          =   $request->code;
-        $product->type_id       =   $request->type_id;
-        $product->unit_price    =   $request->unit_price;
 
-            // ===>> Save To DB
+        // ===>> Field Mapping Product
+        // Map field of table in DB Vs. requested value from client
+        $product                =   new Product;
+        $product->name          =   $req->name;
+        $product->code          =   $req->code;
+        $product->type_id       =   $req->type_id;
+        $product->unit_price    =   $req->unit_price;
+
+        // ===>> Save To DB
         $product->save();
 
         // ===>> Image Upload
-        if ($request->image) {
+        if ($req->image) {
 
             // Need to create folder before storing images
             $folder = Carbon::today()->format('d-m-y');
 
             // ===>> Send to File Service
-            $image  = FileUpload::uploadFile($request->image, 'products', $request->fileName);
+            $image  = FileUpload::uploadFile($req->image, 'products/', $req->fileName);
 
             // ===>> Check if image has been successfully uploaded
             if ($image['url']) {
@@ -99,11 +138,13 @@ class ProductController extends Controller
 
             }
         }
+
         // ===> Success Response Back to Client
         return response()->json([
             'data'      =>  Product::select('*')->with(['type'])->find($product->id),
             'message'   => 'ផលិតផលត្រូវបានបង្កើតដោយជោគជ័យ។'
-        ],Response::HTTP_OK);
+        ], Response::HTTP_OK);
+
     }
 
     public function update(Request $req, $id = 0){
@@ -197,7 +238,7 @@ class ProductController extends Controller
         // Find record from DB
         $data = Product::find($id);
 
-        // ===>> Check if data is valide
+        // ===>> Check if data is valid
         if ($data) { // Yes
 
             // ===>> Delete Data from DB
@@ -217,6 +258,59 @@ class ProductController extends Controller
                 'message'   => 'ទិន្នន័យមិនត្រឹមត្រូវ',
             ], Response::HTTP_BAD_REQUEST);
 
+        }
+    }
+
+    public function getProduct($id = 0, Request $req){
+        try {
+            // Fetch a specific product by ID
+            $product = Product::with(['orderDetails.order'])
+                ->find($id);
+            if (!$product) {
+                // Return an error response if the product is not found
+                return response()->json(['error' => 'Product not found.'], Response::HTTP_NOT_FOUND);
+            }
+
+             // ===>> Date Range
+            // Date Range Filter
+        if ($req->from && $req->to && $this->_isValidDate($req->from) && $this->_isValidDate($req->to)) {
+            $product->orderDetails = $product->orderDetails->filter(function ($orderDetail) use ($req) {
+                $orderedAt = strtotime($orderDetail->order->ordered_at);
+                $fromTimestamp = strtotime($req->from . " 00:00:00");
+                $toTimestamp = strtotime($req->to . " 23:59:59");
+                return $orderedAt >= $fromTimestamp && $orderedAt <= $toTimestamp;
+            });
+        }
+
+            // Filter by receipt number if it's provided in the request
+            if ($req->has('receipt_number') && $req->filled('receipt_number')) {
+                $product->orderDetails = $product->orderDetails->filter(function ($orderDetail) use ($req) {
+                    return $orderDetail->order->receipt_number == $req->input('receipt_number');
+                });
+            }
+
+            // Get the limit from the request or use a default of 10
+            $limit = $req->input('limit', 10);
+
+            // Paginate the orderDetails array with the specified limit
+            $orderDetails = new \Illuminate\Pagination\LengthAwarePaginator(
+                $product->orderDetails->values()->forPage($req->input('page', 1), $limit),
+                count($product->orderDetails),
+                $limit,
+                $req->input('page', 1)
+            );
+
+            // Append the paginated orderDetails to the product
+            $product->setRelation('orderDetails', $orderDetails);
+
+            // Return the product along with its paginated and ordered orderDetails
+            return response()->json($product, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            // Handle any exceptions, if needed
+            return response()->json([
+                'status'    => 'បរាជ័យ',
+                'message'   => 'ទិន្នន័យមិនត្រឹមត្រូវ',
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 

@@ -8,10 +8,14 @@ class CreateUserTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
+
         Schema::create('user', function (Blueprint $table) {
+
             $table->increments('id', true);
 
             $table->integer('type_id')->index()->unsigned();
@@ -32,15 +36,16 @@ class CreateUserTable extends Migration
             
             $table->timestamps();
             $table->softDeletes();
-
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('user');
     }
-};
+}

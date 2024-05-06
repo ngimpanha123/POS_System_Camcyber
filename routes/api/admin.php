@@ -46,6 +46,13 @@ Route::group(['prefix'=> 'user'], function () {
     Route::post('/{id}/change-password', [UserController::class,'changePassword']);
 });
 
+Route::group(['prefix'=> 'pos'], function () {
+
+    Route::get('/products', [POSController::class,'getProducts']);
+    Route::post('/order', [POSController::class,'makeOrder']);
+});
+
+
 
 
 

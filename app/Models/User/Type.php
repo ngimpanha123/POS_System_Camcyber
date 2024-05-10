@@ -18,6 +18,6 @@ class Type extends Model
 
     public function users(): HasMany //1:M
     {
-        return $this->hasMany(User::class, 'type_id');
+        return $this->hasMany(User::class, 'tyep_id');
     }
 }

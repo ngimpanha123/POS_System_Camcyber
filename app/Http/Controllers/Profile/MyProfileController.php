@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Profile;
+namespace App\Http\Controllers\MyProfile;
 
 // ============================================================================>> Core Library
 use Illuminate\Http\Request; // For Getting requested Payload from Client
@@ -21,7 +21,7 @@ use App\Services\FileUpload; // Upload Image/File to File Serivce
 // Model
 use App\Models\User\User;
 
-class MyProfileController extends MainController
+class MyProfileController extends Controller
 {
 
     public function view(){
@@ -61,30 +61,16 @@ class MyProfileController extends MainController
 
         // ===>> Start to update user
         $user = User::findOrFail($auth->id);
-      //  return $user;
+
         // ===>> Check if user is valid
         if ($user) { // Yes
 
             // Mapping between database table field and requested data from client
-
-          
-                // Mapping between database table field and requested data from client
-                if ($req->has('name')) {
-                    $user->name = $req->name;
-                }
-                if ($req->has('phone')) {
-                    $user->phone  = $req->phone;
-                }
-                if ($req->has('email')) {
-                    $user->email  = $req->email;
-                }
-            
-               // return $user;
-            // $user->name         = $req->name;
-            // $user->phone        = $req->phone;
-            // $user->email        = $req->email;
+            $user->name         = $req->name;
+            $user->phone        = $req->phone;
+            $user->email        = $req->email;
             $user->updated_at   = Carbon::now()->format('Y-m-d H:i:s');
-            // return  $user;
+
              // ===>> Upload Avatar to File Service
              if ($req->avatar) {
 
@@ -127,7 +113,7 @@ class MyProfileController extends MainController
         }
     }
 
-    public function changePassword(Request $req, $id = 0){
+    public function changePassword(Request $req){
 
          // ===>>> Data Validation
         $this->validate(
@@ -151,25 +137,20 @@ class MyProfileController extends MainController
             ]
         );
 
+        // ===>> Get current logged user by token
+        $auth = JWTAuth::parseToken()->authenticate();
 
-            //return $req;
-            // ===>> Get User from DB
-           // ===>> Get current logged user by token
-            $auth = JWTAuth::parseToken()->authenticate();
-            // return $auth;
-            // ===>> Start to update user
-            $user = User::findOrFail($auth->id);
-           // return $user;
-            // ===>> Check if User is Valid
-            if ($user) { // Yes
+        // ===>> Start to update user
+        $user = User::findOrFail($auth->id);
 
-                // Mapping between database table field and requested data from client
-                $user->password                 = Hash::make($req->new_password); //Make sure no one can understand it even DB Admin.
-                $user->password_last_updated_at = Carbon::now()->format('Y-m-d H:i:s');
+        // ===>> Compare the Old and New Password
+        if (Hash::check($req->old_password, $user->password)) { // Yes
 
-                // Save to DB
-                $user->save();
-               //return $user;
+            // ===>> Pair Passowrd Field
+            $user->password = Hash::make($req->password);
+
+            // ===>> Save to DB
+            $user->save();
 
             // ===>> Success Response Back to Client
             return response()->json([
@@ -189,3 +170,4 @@ class MyProfileController extends MainController
     }
 
 }
+

@@ -24,16 +24,11 @@ use App\Models\Product\Product;
 class ProductController extends MainController
 {
     public function getData(Request $req){
-        //if using postman to test this function, there are only data of first page 
-        //To get all data, plz add get method after selecting tables and comment orderBy and paginate 
-        //The reason is that calling get() retrieves the results and returns a collection, not  a query builder instance. So that it cannot be paginated.
-        
-        // return $req;
-        // Declar Variable
+
+        // Declare Variable
         $data = Product::select('*')
         ->with(['type'])
         ;
-      //  return $data;
 
         // ===>> Filter Data
         // By Key compared with Code or Name
@@ -121,11 +116,10 @@ class ProductController extends MainController
         // ===>> Image Upload
         if ($req->image) {
 
-            // Need to create folder before storing images
-            $folder = Carbon::today()->format('d-m-y');
+            //return $req->image;
 
             // ===>> Send to File Service
-            $image  = FileUpload::uploadFile($req->image, 'products/', $req->fileName);
+            $image  = FileUpload::uploadFile($req->image, 'Products', $req->fileName);
 
             // ===>> Check if image has been successfully uploaded
             if ($image['url']) {
@@ -141,11 +135,12 @@ class ProductController extends MainController
 
         // ===> Success Response Back to Client
         return response()->json([
-            'data'      =>  Product::select('*')->with(['type'])->find($product->id),
+            'data'      =>  $product,
             'message'   => 'ផលិតផលត្រូវបានបង្កើតដោយជោគជ័យ។'
         ], Response::HTTP_OK);
 
     }
+
 
     public function update(Request $req, $id = 0){
 
@@ -238,7 +233,7 @@ class ProductController extends MainController
         // Find record from DB
         $data = Product::find($id);
 
-        // ===>> Check if data is valid
+        // ===>> Check if data is valide
         if ($data) { // Yes
 
             // ===>> Delete Data from DB

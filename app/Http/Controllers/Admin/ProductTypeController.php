@@ -17,7 +17,7 @@ class ProductTypeController extends MainController
     public function getData(Request $req)
     {
         // តាង data ជាទិន្នន័យដែលត្រូវរក
-        $data = Type::select("id", 'name', 'created_at', 'updated_at')
+        $data = Type::select("id", 'name')
         // ->with([
         //     'products:id,Type_id,name,image'
         // ])
@@ -33,12 +33,11 @@ class ProductTypeController extends MainController
         // ===>> Get data from DB
         $data = $data->orderBy('id', 'DESC')
         ->get();
-      
+
         // ===>> Return data to client
         return $data;
     }
 
-     
     public function create(Request $req)
     {
         // ===>> Check validation

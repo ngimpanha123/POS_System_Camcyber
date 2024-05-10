@@ -15,12 +15,6 @@ class OrderSeeder extends Seeder
      */
     public function run()
     {
-        // ============ Order Status ============ \\
-        // DB::table('order_status')->insert([
-        //     ['name' => 'paid', 'color' => '#00FF00'], // Green color for 'paid' status
-        //     ['name' => 'pending', 'color' => '#FFFF00'], // Yellow color for 'pending' status
-        //     ['name' => 'cancelled', 'color' => '#FF0000'], // Red color for 'cancelled' status
-        // ]);
 
         // ===>> Create Order Records
         $data = [];
@@ -28,7 +22,7 @@ class OrderSeeder extends Seeder
 
             $data[] = [
                 'receipt_number'    => $this->generateReceiptNumber(),
-                'cashier_id'        => rand(9, 10),
+                'cashier_id'        => 1,
                 'total_price'       => 0,
                 'ordered_at'        => Date('Y-m-d H:i:s')
             ];
@@ -48,7 +42,7 @@ class OrderSeeder extends Seeder
             for ($i = 1; $i <= $nOfDetails; $i++) {
 
                 $product    = DB::table('product')->find(rand(1, 20));
-                $qty        = rand(1, 9);
+                $qty        = rand(1, 10);
                 $totalPrice += $product->unit_price * $qty;
 
                 $details[] = [
@@ -81,4 +75,3 @@ class OrderSeeder extends Seeder
         }
     }
 }
-

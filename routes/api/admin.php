@@ -13,59 +13,53 @@ use App\Http\Controllers\Admin\UserController;
 // ===========================================================================>> Dashboard
 Route::get('/dashboard', [DashboardController::class, 'getDashboardInfo']);
 
+// ===========================================================================>> POS
+Route::group(['prefix' => 'pos'], function () {
+
+    Route::get('/products', [POSController::class, 'getProducts']);
+    Route::post('/order',   [POSController::class, 'makeOrder']);
+
+});
+
+// ===========================================================================>> Sale
+Route::group(['prefix' => 'sales'], function () {
+
+    Route::get('/',                         [SaleController::class, 'getData']);
+    Route::delete('/{id}',                  [SaleController::class, 'delete']);
+    Route::get('/print/{receipt_number}',   [PrintController::class, 'printInvoiceOrder']);
+
+});
 
 // ===========================================================================>> Product
-Route::group(['prefix'=> 'products'], function () {
+Route::group(['prefix' => 'products'], function () {
 
-    //=> Product
-    Route::get('/',     [ProductController::class,  'getData']);
-    Route::get('/{id}', [ProductController::class,  'view']);
-    Route::post('/',    [ProductController::class,  'create']);
-    Route::post('/{id}',[ProductController::class,  'update']);
-    Route::delete('/{id}',[ProductController::class,'delete']);
-    Route::get('/transactions/{id}', [ProductController::class,'getProduct']);
+    // ===>> Product Type
+    Route::get('/types',        [ProductTypeController::class, 'getData']); // Read Multi Records
+    Route::post('/types',       [ProductTypeController::class, 'create']); // Create New Record
+    Route::post('/types/{id}',   [ProductTypeController::class, 'update']); // Update
+    Route::delete('/types/{id}', [ProductTypeController::class, 'delete']); // Delete a Record
 
-    //product type
-    Route::get('/types', [ProductTypeController::class,'getData']);
-    Route::post('/types',   [ProductTypeController::class, 'create']);
-    Route::post('/types{id}', [ProductTypeController::class,'update']);
-    Route::delete('/types{id}', [ProductTypeController::class,'delete']);
+    // ===>> Product
+    Route::get('/',        [ProductController::class, 'getData']); // Read Multi Records
+    Route::get('/{id}',    [ProductController::class, 'view']); // View a Record
+    Route::post('/',       [ProductController::class, 'create']); // Create New Record
+    Route::post('/{id}',   [ProductController::class, 'update']); // Update
+    Route::delete('/{id}', [ProductController::class, 'delete']); // Delete a Record
+    Route::get('/transactions/{id}', [ProductController::class, 'getProduct']);
 
 });
 
-Route::group(['prefix'=> 'user'], function () {
+// ===========================================================================>> User
+Route::group(['prefix' => 'users'], function () {
 
-    Route:: get('/types', [UserController::class,'getUserType']);
-    Route::get('/', [UserController::class,'getData']);
-    Route::get('/{id}', [UserController::class,'view']);
-    Route::post('/', [UserController::class,'create']);
-    Route::post('/{id}', [UserController::class,'update']);
-    Route::delete('/{id}', [UserController::class,'delete']);
+    Route::get('/types',                    [UserController::class, 'getUserType']);
+    Route::get('/', 						[UserController::class, 'getData']); // Read Many Records
+    Route::get('/{id}', 					[UserController::class, 'view']); // View a Record
+    Route::post('/', 						[UserController::class, 'create']); // Create New Record
+    Route::post('/{id}', 					[UserController::class, 'update']); // Update Existing Record
+    Route::delete('/{id}', 				    [UserController::class, 'delete']); // Delete a record
 
-    Route::post('/block/{id}', [UserController::class,'block']);
-    Route::post('/{id}/change-password', [UserController::class,'changePassword']);
+    Route::post('/block/{id}', 			    [UserController::class, 'block']); // Block a user. Make sure that he/she cannot login
+    Route::post('/{id}/change-password',    [UserController::class, 'changePassword']); // Change the Password
+
 });
-
-Route::group(['prefix'=> 'pos'], function () {
-
-    Route::get('/products', [POSController::class,'getProducts']);
-    Route::post('/order', [POSController::class,'makeOrder']);
-});
-
-Route::group(['prefix'=> 'sales'], function () {
-    Route::get('/',            [SaleController::class, 'getData']);
-    Route::delete('/{id}', [SaleController::class,'delete']);
-    Route::get('/print/{reciept_number', [PrintController::class,'printfInvioceOrder']);
-});
-
-Route::group(['prefix'=> 'print'], function () {
-    Route::get('/print/{reciept_number', [PrintController::class,'printfInvioceOrder']);
-    Route::get('/print/{reciept_number}', [PrintController::class,'printfInvioceOrder']);
-});
-
-
-
-
-
-
-

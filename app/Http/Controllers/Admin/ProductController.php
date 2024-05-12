@@ -127,7 +127,6 @@ class ProductController extends MainController
 
                 // Map field of table in DB Vs. uri from File Service
                 $product->image     = $image['url'];
-                return $image;
 
                 // ===>> Save to DB
                 $product->save();

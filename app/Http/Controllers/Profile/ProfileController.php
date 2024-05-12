@@ -1,45 +1,47 @@
 <?php
 
-namespace App\Http\Controllers\MyProfile;
+namespace App\Http\Controllers\Profile;
 
 // ============================================================================>> Core Library
-use Illuminate\Http\Request; // For Getting requested Payload from Client
-use Illuminate\Http\Response; // For Responsing data back to Client
-use Illuminate\Support\Facades\Hash; // For Encripting password
+use Illuminate\Http\Request; // For Getting Request from Client
+use Illuminate\Http\Response; // To Response Back to Client
+use Illuminate\Support\Facades\Hash; // For Encripting Password
 
 // ============================================================================>> Third Party Library
-use Carbon\Carbon; // Data Time format & Calculation
-use Tymon\JWTAuth\Facades\JWTAuth; // Get Current Logged User
+use Carbon\Carbon; // Date Time Format & Calculation
+use Tymon\JWTAuth\Facades\JWTAuth; // Get Currently Logged in User
 
 // ============================================================================>> Custom Library
 // Controller
 use App\Http\Controllers\MainController;
 
-// Services
-use App\Services\FileUpload; // Upload Image/File to File Serivce
+// Service
+use App\Services\FileUpload; // Upload to File Micro Serivce
 
 // Model
 use App\Models\User\User;
 
-class MyProfileController extends Controller
-{
 
+class ProfileController extends MainController
+{
+    // Declare funvtion view
     public function view(){
 
-        // ===>> Get current logged user by token
+        // Get current logged user by token
         $auth = JWTAuth::parseToken()->authenticate();
 
-        // ===>> Get user Data from DB;
+        // Get user Data from DB;
         $user = User::select('id', 'name', 'phone', 'email', 'avatar')->where('id', $auth->id)->first();
 
-        // ===>> Success Response Back to Client
+        // Success Response Back to Client
         return response()->json($user, Response::HTTP_OK);
 
     }
 
+    // Declare function update
     public function update(Request $req){
 
-        // ===>>> Data Validation
+        // Data Validation
         $this->validate(
             $req,
             [
@@ -56,13 +58,13 @@ class MyProfileController extends Controller
             ]
         );
 
-        // ===>> Get current logged user by token
+        // Get current logged user by token
         $auth = JWTAuth::parseToken()->authenticate();
 
-        // ===>> Start to update user
+        // Start to update user
         $user = User::findOrFail($auth->id);
 
-        // ===>> Check if user is valid
+        // Check if user is valid
         if ($user) { // Yes
 
             // Mapping between database table field and requested data from client
@@ -71,26 +73,26 @@ class MyProfileController extends Controller
             $user->email        = $req->email;
             $user->updated_at   = Carbon::now()->format('Y-m-d H:i:s');
 
-             // ===>> Upload Avatar to File Service
+             // Upload Avatar 
              if ($req->avatar) {
 
-                // ===>> Create Folder by Date
+                // Create Folder 
                 $folder = Carbon::today()->format('d-m-y');
 
-                // ===>> Upload Image to File Service
+                // Upload Image 
                 $avatar  = FileUpload::uploadFile($req->avatar, 'my-profile/', $req->fileName);
 
-                // ===>> Check if success upload
+                //  Check if success upload
                 if ($avatar['url']) { // Yes
 
                     $user->avatar     = $avatar['url'];
                 }
             }
 
-            // ===>> Save to DB
+            // Save to DB
             $user->save();
 
-            // ===>> Success Response Back to Client
+            // Success Response Back to Client
             return response()->json([
                 'status'    => 'ជោគជ័យ',
                 'message'   => '* ព័ត៌មានផ្ទាល់ខ្លួនរបស់អ្នកត្រូវបានកែប្រែ *',
@@ -104,7 +106,7 @@ class MyProfileController extends Controller
 
         }else{
 
-            // ===>> Failed Response Back to Client
+            // Failed Response Back to Client
             return response()->json([
                 'status' => 'error',
                 'message' => 'ទិន្នន័យរបស់អ្នកមិនត្រឹមត្រូវ'
@@ -113,61 +115,62 @@ class MyProfileController extends Controller
         }
     }
 
+    // Declare function Change Password
     public function changePassword(Request $req){
 
-         // ===>>> Data Validation
-        $this->validate(
-            $req,
-            [
-                'old_password'      => 'required|min:6|max:20',
-                'new_password'      => 'required|min:6|max:20',
-                'confirm_password'  => 'required|min:6|max:20|same:new_password',
-            ],
-            [
-                'old_password.required'     => 'សូមបញ្ចូលពាក្យសម្ងាត់',
-                'old_password.min'          => 'ពាក្យសម្ងាត់ចាស់ ត្រូវមាន៦ ខ្ទង់យ៉ាងតិច',
-                'old_password.max'          => 'ពាក្យសម្ងាត់ចាស់ ត្រូវមាន២០ ច្រើនបំផុត',
+        // Data Validation
+       $this->validate(
+           $req,
+           [
+               'old_password'      => 'required|min:6|max:20',
+               'new_password'      => 'required|min:6|max:20',
+               'confirm_password'  => 'required|min:6|max:20|same:new_password',
+           ],
+           [
+               'old_password.required'     => 'សូមបញ្ចូលពាក្យសម្ងាត់',
+               'old_password.min'          => 'ពាក្យសម្ងាត់ចាស់ ត្រូវមាន៦ ខ្ទង់យ៉ាងតិច',
+               'old_password.max'          => 'ពាក្យសម្ងាត់ចាស់ ត្រូវមាន២០ ច្រើនបំផុត',
 
-                'new_password.required'     => 'សូមបញ្ចូលពាក្យសម្ងាត់ថ្មី',
-                'new_password.min'          => 'ពាក្យសម្ងាត់ថ្មី ត្រូវមាន៦ ខ្ទង់យ៉ាងតិច',
-                'new_password.max'          => 'ពាក្យសម្ងាត់ថ្មី ត្រូវមាន២០ ច្រើនបំផុត',
+               'new_password.required'     => 'សូមបញ្ចូលពាក្យសម្ងាត់ថ្មី',
+               'new_password.min'          => 'ពាក្យសម្ងាត់ថ្មី ត្រូវមាន៦ ខ្ទង់យ៉ាងតិច',
+               'new_password.max'          => 'ពាក្យសម្ងាត់ថ្មី ត្រូវមាន២០ ច្រើនបំផុត',
 
-                'confirm_password.same'     => 'សូមបញ្ចាក់ថាពាក្យសម្ងាត់ថ្មី'
+               'confirm_password.same'     => 'សូមបញ្ចាក់ថាពាក្យសម្ងាត់ថ្មី'
 
-            ]
-        );
+           ]
+       );
 
-        // ===>> Get current logged user by token
-        $auth = JWTAuth::parseToken()->authenticate();
+       // Get current logged user by token
+       $auth = JWTAuth::parseToken()->authenticate();
 
-        // ===>> Start to update user
-        $user = User::findOrFail($auth->id);
+       // Start to update user
+       $user = User::findOrFail($auth->id);
 
-        // ===>> Compare the Old and New Password
-        if (Hash::check($req->old_password, $user->password)) { // Yes
+        // Compare the Old and New Password
+        if (Hash::check($req->old_password, $user->password)) { 
 
-            // ===>> Pair Passowrd Field
-            $user->password = Hash::make($req->password);
+            // Pair Passowrd Field
+            $user->password = Hash::make($req->new_password);
 
-            // ===>> Save to DB
+            // Save to DB
             $user->save();
 
-            // ===>> Success Response Back to Client
+            //  Response Back to Client
             return response()->json([
-                'status'    => 'success',
+                'status'    => 'ជោគជ័យ',
                 'message'   => 'លេខសម្ងាត់របស់អ្នកត្រូវបានកែប្រែដោយជោគជ័យ'
             ], Response::HTTP_OK);
 
-        } else { // No
+        } else { 
 
-            // ===>> Failed Response Back to Client
+            // Failed Response Back to Client
             return response()->json([
-                'status'    => 'error',
+                'status'    => 'បរាជ័យ',
                 'message'   => 'ពាក្យសម្ងាត់ចាស់របស់អ្នកមិនត្រឹមត្រូវ'
             ], Response::HTTP_BAD_REQUEST);
 
         }
-    }
+
+   }
 
 }
-

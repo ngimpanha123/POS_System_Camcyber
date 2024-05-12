@@ -2,11 +2,11 @@
 
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MyProfile\MyProfileController;
+use App\Http\Controllers\Profile\ProfileController;
 
-Route::get('/',                 [MyProfileController::class, 'view']);
-Route::post('/',                [MyProfileController::class, 'update']);
-Route::post('/change-password', [MyProfileController::class, 'changePassword']);
+Route::get('/',                 [ProfileController::class, 'view']);
+Route::post('/',                [ProfileController::class, 'update']);
+Route::post('/change-password', [ProfileController::class, 'changePassword']);
 
 
     

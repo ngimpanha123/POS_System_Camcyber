@@ -44,5 +44,3 @@ class FileUpload
         return   json_decode($response, true);
     }
 }
-
-

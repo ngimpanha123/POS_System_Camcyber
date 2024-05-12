@@ -119,13 +119,15 @@ class ProductController extends MainController
             //return $req->image;
 
             // ===>> Send to File Service
-            $image  = FileUpload::uploadFile($req->image, 'Products', $req->fileName);
+            $folder = Carbon::today()->format('d-m-y');
+            $image  = FileUpload::uploadFile($req->image, 'products/' .$folder, $req->fileName);
 
             // ===>> Check if image has been successfully uploaded
             if ($image['url']) {
 
                 // Map field of table in DB Vs. uri from File Service
                 $product->image     = $image['url'];
+                return $image;
 
                 // ===>> Save to DB
                 $product->save();

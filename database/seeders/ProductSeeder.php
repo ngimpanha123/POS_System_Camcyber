@@ -62,6 +62,10 @@ class ProductSeeder extends Seeder
                  'created_at' => now(),
                  'updated_at' => now()
                 ],
+                ['name' => 'Teacher',
+                 'created_at' => now(),
+                 'updated_at' => now()
+                ],
                
             ]
         );
@@ -259,6 +263,52 @@ class ProductSeeder extends Seeder
                     'name' => 'The Lean Startup',
                     'unit_price' => 55000,
                     'image' => 'static/Products/Book/the-lean-startup.png',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ],
+
+                [
+                    'code' => 'ITC00001',
+                    'type_id' => '11',
+                    'name' => 'Sokkhey Phauk',
+                    'unit_price' => 40000,
+                    'image' => 'static/Products/Teacher/sokey.jpg',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ],
+                [
+                    'code' => 'ITC00002',
+                    'type_id' => '11',
+                    'name' => 'Sopheak Touch',
+                    'unit_price' => 55000,
+                    'image' => 'static/Products/Teacher/neagphek.jpg',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ],
+                [
+                    'code' => 'ITC00003',
+                    'type_id' => '11',
+                    'name' => 'K. Thay',
+                    'unit_price' => 40000,
+                    'image' => 'static/Products/Teacher/K_thy.jpg',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ],
+                [
+                    'code' => 'ITC00004',
+                    'type_id' => '11',
+                    'name' => 'Ponna Phok',
+                    'unit_price' => 55000,
+                    'image' => 'static/Products/Teacher/phnana.jpg',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ],
+                [
+                    'code' => 'ITC00005',
+                    'type_id' => '11',
+                    'name' => 'Pakrigna Long',
+                    'unit_price' => 55000,
+                    'image' => 'static/Products/Teacher/bigdata.jpg',
                     'created_at' => now(),
                     'updated_at' => now()
                 ],

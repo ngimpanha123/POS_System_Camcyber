@@ -30,25 +30,25 @@ Route::group(['prefix' => 'sales'], function () {
 
 });
 
-// =========================================================================================> Add Route Group for Product
-Route::group(['prefix'=>'products'], function ()  {
+// ===========================================================================>> Product
+Route::group(['prefix' => 'products'], function () {
 
-    // ===============================================================> Product_Type
-    Route::get('/types',            [ProductTypeController::class, 'getData']); // Read all records in product type
-    Route::post('/types',           [ProductTypeController::class, 'create']);  // Create new record in product type
-    Route::post('/types/{id}',      [ProductTypeController::class, 'update']);  // Update new record in product type
-    Route::delete('/types/{id}',    [ProductTypeController::class, 'delete']);  // Delete a record in product type
+    // ===>> Product Type
+    Route::get('/types',        [ProductTypeController::class, 'getData']); // Read Multi Records
+    Route::post('/types',       [ProductTypeController::class, 'create']); // Create New Record
+    Route::post('/types/{id}',   [ProductTypeController::class, 'update']); // Update
+    Route::delete('/types/{id}', [ProductTypeController::class, 'delete']); // Delete a Record
 
-    // ===============================================================> Product
-    Route::get('/',         [ProductController::class, 'getData']); // Read all records
-    Route::post('/',        [ProductController::class, 'create']);  // Create new record
-    Route::post('/{id}',    [ProductController::class, 'update']);  // Update a record
-    Route::delete('/{id}',  [ProductController::class, 'delete']);  // Delete a record
-    Route::get('/{id}',     [ProductController::class, 'view']);    // View all records
-    Route::get('/transactions/{id}', [ProductController::class, 'getProduct']); //View Tansactions
-
+    // ===>> Product
+    Route::get('/',        [ProductController::class, 'getData']); // Read Multi Records
+    Route::get('/{id}',    [ProductController::class, 'view']); // View a Record
+    Route::post('/',       [ProductController::class, 'create']); // Create New Record
+    Route::post('/{id}',   [ProductController::class, 'update']); // Update
+    Route::delete('/{id}', [ProductController::class, 'delete']); // Delete a Record
+    Route::get('/transactions/{id}', [ProductController::class, 'getProduct']);
 
 });
+
 // ===========================================================================>> User
 Route::group(['prefix' => 'users'], function () {
 

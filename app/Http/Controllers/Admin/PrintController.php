@@ -1,76 +1,65 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-use Illuminate\Support\Facades\Http;
+
+// ============================================================================>> Core Library
+use Illuminate\Http\Request; // For Getting Request from Client
+
+// ============================================================================>> Core Library
+use Illuminate\Support\Facades\Http; // Handling HTTP Request to Other Service
+
+// ============================================================================>> Custom Library
+// Controller
 use App\Http\Controllers\MainController;
+
+// Model
 use App\Models\Order\Order;
-use Illuminate\Database\QueryException;
 
 class PrintController extends MainController
 {
+    //==================== Public Variable ====================
     private $JS_BASE_URL;
     private $JS_USERNAME;
     private $JS_PASSWORD;
     private $JS_TEMPLATE;
 
+    // Declare function construct
     public function __construct()
     {
-        $this->JS_BASE_URL   = env('JS_BASE_URL');
-        $this->JS_USERNAME   = env('JS_USERNAME');
-        $this->JS_PASSWORD   = env('JS_PASSWORD');
-        $this->JS_TEMPLATE   = env('JS_TEMPLATE');
+        // Get JS report configration from ENV
+        $this->JS_BASE_URL = env('JS_BASE_URL');
+        $this->JS_USERNAME = env('JS_USERNAME');
+        $this->JS_PASSWORD = env('JS_PASSWORD');
     }
-
-    public function printInvoiceOrder($receiptNumber = 0)
+    
+    public function printInvoice($receiptNumber = 0)
     {
+
         try {
 
-            // URL Preparation
-
-            $url = $this->JS_BASE_URL."/api/report";
-            // Debugging: Log the constructed URL
-            info("Constructed URL: $url");
-
-            // Get Data from DB
-            $receipt = Order::select('id', 'receipt_number', 'cashier_id', 'total_price', 'ordered_at')
-                ->with([
-                    'cashier', // M:1
-                    'details' // 1:M
-                ])
-                ->where('receipt_number', $receiptNumber)
-                ->orderBy('id', 'desc')
-                ->get();
-
-            // Find Total Price
-            $totalPrice = 0;
-            foreach ($receipt as $row) {
-                $totalPrice += $row->total_price;
-            }
-
-            // Prepare Payload for JS Report Service
+            // Payload to be sent to JS Report Service
             $payload = [
                 "template" => [
-                    "name" => $this->JS_TEMPLATE,
+                    "name" => '/Invoice/main',
                 ],
-                "data" => [
-                    'total' => $totalPrice,
-                    'data'  => $receipt,
-                ],
+                "data" => $this->_getReceiptData($receiptNumber),
             ];
 
-            // Send Request to JS Report Service
+            // Send Request ot JS Report Service
             $response = Http::withBasicAuth($this->JS_USERNAME, $this->JS_PASSWORD)
-                ->withHeaders([
-                    'Content-Type' => 'application/json',
-                ])
-                ->post($url, $payload);
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+            ])
+            ->post($this->JS_BASE_URL . '/api/report', $payload);
 
             // Success Response Back to Client
             return [
                 'file_base64'   => base64_encode($response),
                 'error'         => '',
             ];
+
         } catch (\Exception $e) {
+
             // Handle the exception
             return [
                 'file_base64' => '',
@@ -79,5 +68,33 @@ class PrintController extends MainController
         }
     }
 
-}
 
+    private function _getReceiptData($receiptNumber = 0)
+    {
+        try {
+
+            // Get Data from DB
+            $data = Order::select('id', 'receipt_number', 'cashier_id', 'total_price', 'ordered_at')
+            ->with([
+                'cashier', // M:1
+                'details' // 1:M
+            ])
+            ->where('receipt_number', $receiptNumber) // Condition
+            ->first();
+
+            // Return data Back
+            return $data;
+
+        } catch (\Exception $e) {
+
+            // Handle the exception
+            return [
+                'total' => 0,
+                'data' => [],
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+
+}

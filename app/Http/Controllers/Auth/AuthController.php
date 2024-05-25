@@ -12,6 +12,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 // ===================================================>> Custom Library
 use App\Http\Controllers\MainController;
+use App\Services\TelegramService;
 
 class AuthController extends MainController
 {
@@ -104,6 +105,9 @@ class AuthController extends MainController
             $role = 'Admin';
         }
 
+        // Telegram Send User Login
+        $this->_customerLogingAlertAdmin($user);
+
         // ===>> Success Response Back to Client
         return response()->json([
             'access_token'  => $token,
@@ -130,5 +134,17 @@ class AuthController extends MainController
         return response()->json(['message' => 'Successfully logged out'], 200);
     }
 
+    private function _customerLogingAlertAdmin($user = null)
+    {
+        $htmlMessage = "<b>អតិថិជនបានចូលប្រេីប្រាស់</b>\n";
+        $htmlMessage .= "- ឈ្មោៈ        :" . $user->name . "\n";
+        $htmlMessage .= "- លេខទូរស័ព្ទ   :" . $user->phone . "\n";
+        $htmlMessage .= "- អុីម៉ែល       :" . $user->email . "\n";
+        $htmlMessage .= "- អាស័យដ្ឋាន   :" . $user->avatar . "\n";
+
+        //$htmlMessage .= " IP Address   :" . $user_ip . "\n";
+
+        TelegramService::sendMessage($htmlMessage, env('TELEGRAM_CHAT_ID'));
+    }
 
 }

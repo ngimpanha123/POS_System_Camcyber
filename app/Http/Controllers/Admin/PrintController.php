@@ -28,7 +28,7 @@ class PrintController extends MainController
             // Payload to be sent to JS Report Service
             $payload = [
                 "template" => [
-                    "name" => '/Invoice/main',
+                    "name" => $this->JS_TEMPLATE,
                 ],
                 "data" => $this->_getRecieptData($receiptNumber),
             ];

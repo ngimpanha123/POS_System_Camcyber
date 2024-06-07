@@ -6,7 +6,7 @@ use App\Http\Controllers\MainController;
 use App\Models\Order\Order;
 use App\Services\TelegramService;
 use Illuminate\Database\QueryException;
-
+use App\Http\Controllers\Auth\AuthController;
 class PrintController extends MainController
 {
     private $JS_BASE_URL;
@@ -24,7 +24,9 @@ class PrintController extends MainController
     public function printInvoiceOrder($receiptNumber = 0)
     {
         try {
-
+            // Get user type
+            $userType = $this->getUserType();
+    
             // Payload to be sent to JS Report Service
             $payload = [
                 "template" => [
@@ -32,27 +34,43 @@ class PrintController extends MainController
                 ],
                 "data" => $this->_getRecieptData($receiptNumber),
             ];
-
-            // Send Request ot JS Report Service
+    
+            // Send Request to JS Report Service
             $response = Http::withBasicAuth($this->JS_USERNAME, $this->JS_PASSWORD)
-            ->withHeaders([
-                'Content-Type' => 'application/json',
-            ])
-            ->post($this->JS_BASE_URL . '/api/report', $payload);
+                ->withHeaders([
+                    'Content-Type' => 'application/json',
+                ])
+                ->post($this->JS_BASE_URL . '/api/report', $payload);
+    
+            // Convert response to base64 and get binary data
+            $fileContent = $response->body();
+            $fileName = 'invoice_' . $receiptNumber . '.pdf';
+            $filePath = storage_path('app/public/' . $fileName);
+    
+            // Save file to storage
+            file_put_contents($filePath, $fileContent);
+    
+            if ($userType === 'Admin') {
+                // Return base64-encoded response for staff
+                // Success Response Back to Client
+                return [
+                    'file_base64'   => base64_encode($response),
+                    'error'         => '',
+                ];
 
-            // Success Response Back to Client
-            return [
-                'file_base64'   => base64_encode($response),
-                'error'         => '',
-            ];
-
-            $telegramResponse = TelegramService::sendDocument($fileContent, $fileName, env('TELEGRAM_CHAT_ID'));
-
+            } else {
+                // Send file to Telegram for other users
+                $telegramResponse = TelegramService::sendDocument($fileContent, $fileName, env('TELEGRAM_CHAT_JSREPORT'));
+    
+                return [
+                    'telegramResponse' => $telegramResponse,
+                    'error' => '',
+                ];
+            }
         } catch (\Exception $e) {
-
             // Handle the exception
             return [
-                'file_base64' => '',
+                'response' => '',
                 'error' => $e->getMessage(),
             ];
         }
@@ -83,6 +101,16 @@ class PrintController extends MainController
             ];
         }
     }
-
+    private function getUserType()
+        {
+            // ==>> Get Data from Auth App for User object
+            $user = auth()->user();
+            if ($user->type_id == 2) { //
+                $role = 'Staff';
+            } else {
+                $role = 'Admin';
+            }
+            return $role;
+        }
 
 }
